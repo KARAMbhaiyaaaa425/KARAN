@@ -1,4 +1,4 @@
-import os, subprocess, signal, threading, time, json, resource, shutil
+﻿import os, subprocess, signal, threading, time, json, resource, shutil
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from datetime import datetime, timedelta
 import pytz
@@ -11,14 +11,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 USERS_ROOT = os.path.join(BASE_DIR, 'users')
 DB_FILE = os.path.join(BASE_DIR, 'users.json')
 
-# --- ডাটাবেস লজিক ---
+# --- à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ à¦²à¦œà¦¿à¦• ---
 import requests
 import json
 import base64
 import os
 from flask import jsonify, request, session, render_template, redirect, url_for
 
-# --- গ্লোবাল গিটহাব সেটিংস ---
+# --- à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¸à§‡à¦Ÿà¦¿à¦‚à¦¸ ---
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
 GITHUB_REPO = 'Manohar81020/-BOT-HOST-BOT'
 GITHUB_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/users.json"
@@ -31,7 +31,7 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 AI_MODEL = "meta-llama/llama-3-8b-instruct"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
-# --- ডাটাবেস লজিক (Fixed) ---
+# --- à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ à¦²à¦œà¦¿à¦• (Fixed) ---
 def load_users():
     headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
     try:
@@ -43,7 +43,7 @@ def load_users():
                 json.dump(decoded_data, f, indent=4)
             return decoded_data
     except Exception as e:
-        print(f"⚠️ GitHub Load Error: {e}")
+        print(f"âš ï¸ GitHub Load Error: {e}")
     
     # CRITICAL: Ensure this part is robust
     if os.path.exists(DB_FILE):
@@ -52,16 +52,16 @@ def load_users():
     return {} # Only returns empty if NO file exists anywhere
 
 
-# --- লগইন রুট (Fixed) ---
+# --- à¦²à¦—à¦‡à¦¨ à¦°à§à¦Ÿ (Fixed) ---
 
 
 
 def save_users(data):
-    # লোকাল সেভ
+    # à¦²à§‹à¦•à¦¾à¦² à¦¸à§‡à¦­
     with open(DB_FILE, 'w') as f:
         json.dump(data, f, indent=4)
     
-    # গিটহাব ব্যাকআপ (users.json এর জন্য)
+    # à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª (users.json à¦à¦° à¦œà¦¨à§à¦¯)
     try:
         with open(DB_FILE, "rb") as f:
             content = base64.b64encode(f.read()).decode("utf-8")
@@ -82,7 +82,7 @@ def save_users(data):
 
 if not os.path.exists(USERS_ROOT): os.makedirs(USERS_ROOT)
 
-# --- হেল্পার ফাংশনস ---
+# --- à¦¹à§‡à¦²à§à¦ªà¦¾à¦° à¦«à¦¾à¦‚à¦¶à¦¨à¦¸ ---
 def get_user_path():
     if 'username' not in session: return USERS_ROOT
     path = os.path.join(USERS_ROOT, session['username'])
@@ -111,8 +111,8 @@ def get_ram_usage():
             return (total - free) // 1024
     except: return 12
 
-# --- গ্লোবাল স্টোরেজ ---
-console_logs = {"terminal": "টার্মিনাল প্রস্তুত...\n"}
+# --- à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ ---
+console_logs = {"terminal": "à¦Ÿà¦¾à¦°à§à¦®à¦¿à¦¨à¦¾à¦² à¦ªà§à¦°à¦¸à§à¦¤à§à¦¤...\n"}
 running_processes = {}
 file_start_times = {}
 
@@ -128,29 +128,29 @@ def log_activity(action, details):
     entry = {
         "action": action,
         "details": details,
-        "time": time.strftime("%I:%M %p"), # এখানে %H এর বদলে %I:%M %p দিন
+        "time": time.strftime("%I:%M %p"), # à¦à¦–à¦¾à¦¨à§‡ %H à¦à¦° à¦¬à¦¦à¦²à§‡ %I:%M %p à¦¦à¦¿à¦¨
         "ip": request.remote_addr
     }
     user_activities[u].insert(0, entry) # Newest first
     user_activities[u] = user_activities[u][:20] # Limit to 20 logs
 
-# --- [FIXED] START, STOP, RESTART লজিক ---
+# --- [FIXED] START, STOP, RESTART à¦²à¦œà¦¿à¦• ---
 
 import time
 
 def capture(fk, fn, p, log_file_path):
     try:
-        # ফাইলটি .html ফরম্যাটে সেভ করলে ব্রাউজারে কালার দেখা যাবে
+        # à¦«à¦¾à¦‡à¦²à¦Ÿà¦¿ .html à¦«à¦°à¦®à§à¦¯à¦¾à¦Ÿà§‡ à¦¸à§‡à¦­ à¦•à¦°à¦²à§‡ à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦°à§‡ à¦•à¦¾à¦²à¦¾à¦° à¦¦à§‡à¦–à¦¾ à¦¯à¦¾à¦¬à§‡
         with open(log_file_path, "a", encoding="utf-8") as f:
             
             # Start message in Green (HTML Style)
             start_time = time.strftime('%H:%M:%S')
-            f.write(f'<div style="color: #2ecc71;">[{start_time}] 💞 {fn} sᴛᴀʀᴛɪɴɢ...</div>\n')
+            f.write(f'<div style="color: #2ecc71;">[{start_time}] ðŸ’ž {fn} sá´›á´€Ê€á´›ÉªÉ´É¢...</div>\n')
             f.flush()
             
             for line in iter(p.stdout.readline, b''):
                 decoded_line = line.decode('utf-8', errors='ignore')
-                # সাধারণ লাইনগুলো সাদা বা কালো রঙে থাকবে
+                # à¦¸à¦¾à¦§à¦¾à¦°à¦£ à¦²à¦¾à¦‡à¦¨à¦—à§à¦²à§‹ à¦¸à¦¾à¦¦à¦¾ à¦¬à¦¾ à¦•à¦¾à¦²à§‹ à¦°à¦™à§‡ à¦¥à¦¾à¦•à¦¬à§‡
                 f.write(f'<div style="color: #ffffff; background: #1e1e1e; font-family: monospace;">{decoded_line}</div>')
                 f.flush()
                 
@@ -158,7 +158,7 @@ def capture(fk, fn, p, log_file_path):
             
             # Stop message in Red (HTML Style)
             stop_time = time.strftime('%H:%M:%S')
-            f.write(f'<div style="color: #e74c3c;">[{stop_time}] ⛔ pʀᴏᴄᴇss sᴛᴏᴘᴘᴇᴅ।</div>\n')
+            f.write(f'<div style="color: #e74c3c;">[{stop_time}] â›” pÊ€á´á´„á´‡ss sá´›á´á´˜á´˜á´‡á´…à¥¤</div>\n')
             f.flush()
             
     except Exception as e:
@@ -191,7 +191,7 @@ def start_file(filename):
         limit_in_mb = u.get('disk', 1024)
 
     if current_usage_mb >= limit_in_mb:
-        return jsonify({"status": "error", "msg": f"❌ Storage Full!"})
+        return jsonify({"status": "error", "msg": f"âŒ Storage Full!"})
 
     file_key = f"{user}_{filename}"
     file_path = os.path.join(user_dir, filename)
@@ -239,16 +239,16 @@ def start_file(filename):
         
         threading.Thread(target=capture, args=(file_key, filename, proc, log_file_path), daemon=True).start()
         
-        return jsonify({"status":"success", "msg": f"{filename} Rᴜɴɴɪɴɢ ... 🔄"})
+        return jsonify({"status":"success", "msg": f"{filename} Rá´œÉ´É´ÉªÉ´É¢ ... ðŸ”„"})
     except Exception as e:
         return jsonify({"status":"error", "msg": f"Launch Error: {str(e)}"})
 
 
 
 
-# --- গিটহাব ব্যাকআপ লজিক (এটি সবার উপরে থাকবে) ---
+# --- à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦²à¦œà¦¿à¦• (à¦à¦Ÿà¦¿ à¦¸à¦¬à¦¾à¦° à¦‰à¦ªà¦°à§‡ à¦¥à¦¾à¦•à¦¬à§‡) ---
 def auto_github_backup(username, filename, file_path):
-    GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '') # টোকেন ঠিক থাকলে কাজ করবে
+    GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '') # à¦Ÿà§‹à¦•à§‡à¦¨ à¦ à¦¿à¦• à¦¥à¦¾à¦•à¦²à§‡ à¦•à¦¾à¦œ à¦•à¦°à¦¬à§‡
     GITHUB_REPO = 'ronobiswas874-sketch/Hosting-files'
     
     github_path = f"users/{username}/{filename}"
@@ -265,7 +265,7 @@ def auto_github_backup(username, filename, file_path):
             "Accept": "application/vnd.github.v3+json"
         }
         
-        # SHA চেক করা (ফাইল আপডেট করার জন্য এটি মাস্ট)
+        # SHA à¦šà§‡à¦• à¦•à¦°à¦¾ (à¦«à¦¾à¦‡à¦² à¦†à¦ªà¦¡à§‡à¦Ÿ à¦•à¦°à¦¾à¦° à¦œà¦¨à§à¦¯ à¦à¦Ÿà¦¿ à¦®à¦¾à¦¸à§à¦Ÿ)
         get_res = requests.get(url, headers=headers)
         data = {
             "message": f"Auto Backup: {filename} (User: {username})",
@@ -275,15 +275,15 @@ def auto_github_backup(username, filename, file_path):
         if get_res.status_code == 200:
             data["sha"] = get_res.json()["sha"]
 
-        # গিটহাবে পুশ
+        # à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬à§‡ à¦ªà§à¦¶
         put_res = requests.put(url, json=data, headers=headers)
         if put_res.status_code in [200, 201]:
-            print(f"✅ Backup Success: {filename}")
+            print(f"âœ… Backup Success: {filename}")
         else:
-            print(f"❌ Backup Failed: {put_res.json()}")
+            print(f"âŒ Backup Failed: {put_res.json()}")
             
     except Exception as e:
-        print(f"⚠️ Backup Error: {e}")
+        print(f"âš ï¸ Backup Error: {e}")
 
 @app.route('/stop/<path:filename>')
 def stop_file(filename):
@@ -296,10 +296,10 @@ def stop_file(filename):
     # [ACTIVITY LOG] Stop track korbe
     log_activity("server:stop", f"Stopped process: {filename}")
     
-    # লগ ফাইলের পাথ
+    # à¦²à¦— à¦«à¦¾à¦‡à¦²à§‡à¦° à¦ªà¦¾à¦¥
     log_file_path = os.path.join(user_dir, f"{filename}.log")
     
-    # ১. প্রসেস কিল করা (যদি রানিং থাকে)
+    # à§§. à¦ªà§à¦°à¦¸à§‡à¦¸ à¦•à¦¿à¦² à¦•à¦°à¦¾ (à¦¯à¦¦à¦¿ à¦°à¦¾à¦¨à¦¿à¦‚ à¦¥à¦¾à¦•à§‡)
     if file_key in running_processes:
         try:
             os.kill(running_processes[file_key], signal.SIGKILL)
@@ -308,18 +308,18 @@ def stop_file(filename):
         except:
             if file_key in running_processes: del running_processes[file_key]
 
-    # ২. অটোমেটিক লগ ক্লিয়ার করা (ফাইল ডিলিট)
+    # à§¨. à¦…à¦Ÿà§‹à¦®à§‡à¦Ÿà¦¿à¦• à¦²à¦— à¦•à§à¦²à¦¿à§Ÿà¦¾à¦° à¦•à¦°à¦¾ (à¦«à¦¾à¦‡à¦² à¦¡à¦¿à¦²à¦¿à¦Ÿ)
     try:
         if os.path.exists(log_file_path):
-            os.remove(log_file_path) # স্টপ করলে লগ ফাইল মুছে যাবে
+            os.remove(log_file_path) # à¦¸à§à¦Ÿà¦ª à¦•à¦°à¦²à§‡ à¦²à¦— à¦«à¦¾à¦‡à¦² à¦®à§à¦›à§‡ à¦¯à¦¾à¦¬à§‡
         
-        # গ্লোবাল লগ ডিকশনারি ক্লিয়ার করা
+        # à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦²à¦— à¦¡à¦¿à¦•à¦¶à¦¨à¦¾à¦°à¦¿ à¦•à§à¦²à¦¿à§Ÿà¦¾à¦° à¦•à¦°à¦¾
         if file_key in console_logs:
             console_logs[file_key] = "" 
     except:
         pass
 
-    return jsonify({"status":"success", "msg":"Bᴏᴛ Sᴛᴏᴩ Sᴜꜱꜰᴜʟʟʏ! 🧹"})
+    return jsonify({"status":"success", "msg":"Bá´á´› Sá´›á´á´© Sá´œêœ±êœ°á´œÊŸÊŸÊ! ðŸ§¹"})
 
 @app.route('/restart/<path:filename>')
 def restart_file(filename):
@@ -349,7 +349,7 @@ def restart_file(filename):
     if current_usage_mb >= limit_in_mb:
         return jsonify({
             "status": "error", 
-            "msg": f"❌ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Delete files to restart!"
+            "msg": f"âŒ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Delete files to restart!"
         })
 
     # --- [IMPROVED RESTART LOGIC] ---
@@ -388,7 +388,7 @@ def restart_file(filename):
 
 
 
-# গ্লোবাল ভেরিয়েবল (ফাংশনের বাইরে ফাইলের উপরে রাখুন)
+# à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦­à§‡à¦°à¦¿à§Ÿà§‡à¦¬à¦² (à¦«à¦¾à¦‚à¦¶à¦¨à§‡à¦° à¦¬à¦¾à¦‡à¦°à§‡ à¦«à¦¾à¦‡à¦²à§‡à¦° à¦‰à¦ªà¦°à§‡ à¦°à¦¾à¦–à§à¦¨)
 last_net_stats = {"in": 0, "out": 0, "time": time.time()}
 
 
@@ -400,18 +400,18 @@ def get_dir_size(path):
         for dirpath, dirnames, filenames in os.walk(path):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
-                # সিম্বলিক লিঙ্ক বাদ দিয়ে আসল ফাইলের সাইজ নেওয়া হচ্ছে
+                # à¦¸à¦¿à¦®à§à¦¬à¦²à¦¿à¦• à¦²à¦¿à¦™à§à¦• à¦¬à¦¾à¦¦ à¦¦à¦¿à§Ÿà§‡ à¦†à¦¸à¦² à¦«à¦¾à¦‡à¦²à§‡à¦° à¦¸à¦¾à¦‡à¦œ à¦¨à§‡à¦“à§Ÿà¦¾ à¦¹à¦šà§à¦›à§‡
                 if not os.path.islink(fp):
                     total += os.path.getsize(fp)
     except Exception as e:
         print(f"Size Error: {e}")
         return 0
     
-    # বাইট থেকে মেগাবাইটে রূপান্তর (দশমিকের পর ২ ঘর পর্যন্ত)
+    # à¦¬à¦¾à¦‡à¦Ÿ à¦¥à§‡à¦•à§‡ à¦®à§‡à¦—à¦¾à¦¬à¦¾à¦‡à¦Ÿà§‡ à¦°à§‚à¦ªà¦¾à¦¨à§à¦¤à¦° (à¦¦à¦¶à¦®à¦¿à¦•à§‡à¦° à¦ªà¦° à§¨ à¦˜à¦° à¦ªà¦°à§à¦¯à¦¨à§à¦¤)
     size_in_mb = total / (1024 * 1024)
     return round(size_in_mb, 2)
 
-# --- ২. তোমার ফিক্সড করা স্ট্যাটাস রুট ---
+# --- à§¨. à¦¤à§‹à¦®à¦¾à¦° à¦«à¦¿à¦•à§à¦¸à¦¡ à¦•à¦°à¦¾ à¦¸à§à¦Ÿà§à¦¯à¦¾à¦Ÿà¦¾à¦¸ à¦°à§à¦Ÿ ---
 import os  # Eta jeno thake
 
 @app.route('/stats')
@@ -436,20 +436,20 @@ def stats():
     except:
         cpu_usage = "32.5"
 
-    # --- সময় লজিক ---
+    # --- à¦¸à¦®à§Ÿ à¦²à¦œà¦¿à¦• ---
     kolkata_tz = pytz.timezone('Asia/Kolkata')
     current_time_str = datetime.now(kolkata_tz).strftime('%d-%m-%Y %H:%M:%S')
     expiry_date = u.get('expiry_date', 'N/A')
 
-    # --- [FIXED] আপটাইম লজিক ---
+    # --- [FIXED] à¦†à¦ªà¦Ÿà¦¾à¦‡à¦® à¦²à¦œà¦¿à¦• ---
     filename = request.args.get('file', 'main.py')
     
-    # ফিক্স: .lower() বাদ দেওয়া হয়েছে যাতে আপনার অরিজিনাল ইউজারনেম এর সাথে কি (Key) ম্যাচ করে
+    # à¦«à¦¿à¦•à§à¦¸: .lower() à¦¬à¦¾à¦¦ à¦¦à§‡à¦“à§Ÿà¦¾ à¦¹à§Ÿà§‡à¦›à§‡ à¦¯à¦¾à¦¤à§‡ à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à¦¿à¦œà¦¿à¦¨à¦¾à¦² à¦‡à¦‰à¦œà¦¾à¦°à¦¨à§‡à¦® à¦à¦° à¦¸à¦¾à¦¥à§‡ à¦•à¦¿ (Key) à¦®à§à¦¯à¦¾à¦š à¦•à¦°à§‡
     file_key = f"{user}_{filename}"
     uptime_str = "Offline"
     
     if file_key in running_processes:
-        # প্রসেসটি আসলে ব্যাকগ্রাউন্ডে জীবিত আছে কি না চেক
+        # à¦ªà§à¦°à¦¸à§‡à¦¸à¦Ÿà¦¿ à¦†à¦¸à¦²à§‡ à¦¬à§à¦¯à¦¾à¦•à¦—à§à¦°à¦¾à¦‰à¦¨à§à¦¡à§‡ à¦œà§€à¦¬à¦¿à¦¤ à¦†à¦›à§‡ à¦•à¦¿ à¦¨à¦¾ à¦šà§‡à¦•
         pid = running_processes[file_key]
         is_alive = False
         try:
@@ -463,12 +463,12 @@ def stats():
             h, m, s = elapsed // 3600, (elapsed % 3600) // 60, elapsed % 60
             uptime_str = f"{h}h {m}m {s}s"
         else:
-            # যদি প্রসেস মরে যায়, তবে ডিকশনারি থেকে ক্লিন করে দেওয়া হলো
+            # à¦¯à¦¦à¦¿ à¦ªà§à¦°à¦¸à§‡à¦¸ à¦®à¦°à§‡ à¦¯à¦¾à§Ÿ, à¦¤à¦¬à§‡ à¦¡à¦¿à¦•à¦¶à¦¨à¦¾à¦°à¦¿ à¦¥à§‡à¦•à§‡ à¦•à§à¦²à¦¿à¦¨ à¦•à¦°à§‡ à¦¦à§‡à¦“à§Ÿà¦¾ à¦¹à¦²à§‹
             running_processes.pop(file_key, None)
             file_start_times.pop(file_key, None)
             uptime_str = "Offline"
 
-    # --- নেটওয়ার্ক ট্রাফিক লজিক ---
+    # --- à¦¨à§‡à¦Ÿà¦“à§Ÿà¦¾à¦°à§à¦• à¦Ÿà§à¦°à¦¾à¦«à¦¿à¦• à¦²à¦œà¦¿à¦• ---
     net_in_str, net_out_str = "0.00 MiB", "0.00 MiB"
     try:
         with open("/proc/net/dev", "r") as f:
@@ -506,7 +506,7 @@ def stats():
 
 @app.route('/setuser')
 def set_user_url():
-    # গিটহাব কনফিগারেশন
+    # à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦•à¦¨à¦«à¦¿à¦—à¦¾à¦°à§‡à¦¶à¦¨
     GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
     GITHUB_REPO = 'ronobiswas874-sketch/Hosting-files'
 
@@ -517,13 +517,13 @@ def set_user_url():
     days_input = request.args.get('days', '30d')
 
     if not u or not p:
-        return jsonify({"status": "error", "msg": "Username (u) and Password (p) are required! 🤬"})
+        return jsonify({"status": "error", "msg": "Username (u) and Password (p) are required! ðŸ¤¬"})
 
-    # --- সময় সেটআপ (Kolkata Timezone) ---
+    # --- à¦¸à¦®à§Ÿ à¦¸à§‡à¦Ÿà¦†à¦ª (Kolkata Timezone) ---
     kolkata_tz = pytz.timezone('Asia/Kolkata')
     now = datetime.now(kolkata_tz)
     
-    # --- ডাইনামিক এক্সপায়ারি লজিক ---
+    # --- à¦¡à¦¾à¦‡à¦¨à¦¾à¦®à¦¿à¦• à¦à¦•à§à¦¸à¦ªà¦¾à§Ÿà¦¾à¦°à¦¿ à¦²à¦œà¦¿à¦• ---
     match_days = re.match(r"(\d+)([a-zA-Z]+)", days_input)
     if match_days:
         value = int(match_days.group(1))
@@ -539,17 +539,17 @@ def set_user_url():
 
     expiry_str = expiry_time.strftime('%d-%m-%Y %H:%M:%S')
 
-    # --- মেমরি ইউনিট সাপোর্ট ---
+    # --- à¦®à§‡à¦®à¦°à¦¿ à¦‡à¦‰à¦¨à¦¿à¦Ÿ à¦¸à¦¾à¦ªà§‹à¦°à§à¦Ÿ ---
     final_memory = memory_input.upper()
     if not any(unit in final_memory for unit in ['KB', 'MB', 'GB']):
         final_memory += 'MB'
 
     disk_val = int(disk) if disk else 500
     
-    # ১. গিটহাব থেকে বর্তমান সব ইউজার লোড করা (যাতে পুরনো কেউ ডিলিট না হয়)
+    # à§§. à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¥à§‡à¦•à§‡ à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦¸à¦¬ à¦‡à¦‰à¦œà¦¾à¦° à¦²à§‹à¦¡ à¦•à¦°à¦¾ (à¦¯à¦¾à¦¤à§‡ à¦ªà§à¦°à¦¨à§‹ à¦•à§‡à¦‰ à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦¨à¦¾ à¦¹à§Ÿ)
     users = load_users()
     
-    # ২. নতুন ইউজার ডাটা অ্যাড বা এডিট করা
+    # à§¨. à¦¨à¦¤à§à¦¨ à¦‡à¦‰à¦œà¦¾à¦° à¦¡à¦¾à¦Ÿà¦¾ à¦…à§à¦¯à¦¾à¦¡ à¦¬à¦¾ à¦à¦¡à¦¿à¦Ÿ à¦•à¦°à¦¾
     users[u] = {
         "p": p, 
         "disk": disk_val, 
@@ -559,10 +559,10 @@ def set_user_url():
         "expiry_date": expiry_str 
     }
     
-    # ৩. গিটহাব এবং লোকালে সেভ করা
+    # à§©. à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦à¦¬à¦‚ à¦²à§‹à¦•à¦¾à¦²à§‡ à¦¸à§‡à¦­ à¦•à¦°à¦¾
     save_users(users)
 
-    # ডিরেক্টরি এবং ফাইল তৈরি (লোকাল সার্ভারে)
+    # à¦¡à¦¿à¦°à§‡à¦•à§à¦Ÿà¦°à¦¿ à¦à¦¬à¦‚ à¦«à¦¾à¦‡à¦² à¦¤à§ˆà¦°à¦¿ (à¦²à§‹à¦•à¦¾à¦² à¦¸à¦¾à¦°à§à¦­à¦¾à¦°à§‡)
     user_path = os.path.join(USERS_ROOT, u)
     if not os.path.exists(user_path):
         os.makedirs(user_path)
@@ -574,7 +574,7 @@ def set_user_url():
 
     return jsonify({
         "status": "success", 
-        "msg": f"User '{u}' created and synced to GitHub! 🚀",
+        "msg": f"User '{u}' created and synced to GitHub! ðŸš€",
         "details": {
             "username": u,
             "memory_limit": final_memory,
@@ -586,7 +586,7 @@ def set_user_url():
 
 
 
-# --- বাকি সব ফাংশন (অবিকল রাখা হয়েছে) ---
+# --- à¦¬à¦¾à¦•à¦¿ à¦¸à¦¬ à¦«à¦¾à¦‚à¦¶à¦¨ (à¦…à¦¬à¦¿à¦•à¦² à¦°à¦¾à¦–à¦¾ à¦¹à§Ÿà§‡à¦›à§‡) ---
 import time
 import threading
 import subprocess
@@ -603,7 +603,7 @@ def terminal():
     users = load_users()
     u = users.get(user, {})
     
-    # --- [SMART FIX] স্টোরেজ লিমিট চেক লজিক ---
+    # --- [SMART FIX] à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ à¦²à¦¿à¦®à¦¿à¦Ÿ à¦šà§‡à¦• à¦²à¦œà¦¿à¦• ---
     user_dir = get_user_path() 
     current_usage_mb = get_dir_size(user_dir)
     
@@ -621,7 +621,7 @@ def terminal():
     if current_usage_mb >= limit_in_mb:
         return jsonify({
             "status": "error", 
-            "msg": f"❌ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Please delete files first. "
+            "msg": f"âŒ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Please delete files first. "
         })
     # ------------------------------------------
 
@@ -633,7 +633,7 @@ def terminal():
     if not cmd: 
         return jsonify({"status":"error", "msg": "Empty command"})
 
-    console_logs[log_key] = f'<span style="color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);">[{time.strftime("%H:%M:%S")}] 💞 {user}:~$ {cmd}</span>\n'
+    console_logs[log_key] = f'<span style="color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);">[{time.strftime("%H:%M:%S")}] ðŸ’ž {user}:~$ {cmd}</span>\n'
 
     def run_process(full_cmd, is_uninstall=False, pkg_name=None, is_install=False):
         try:
@@ -642,8 +642,8 @@ def terminal():
             env["PYTHONUNBUFFERED"] = "1" 
 
             if is_uninstall and pkg_name:
-                # আপনার আনইনস্টল লজিক অবিকল রাখা হয়েছে
-                console_logs[log_key] += f'<span style="color: #ff4444;">[{time.strftime("%H:%M:%S")}] 🧹 Manually removing {pkg_name}...</span>\n'
+                # à¦†à¦ªà¦¨à¦¾à¦° à¦†à¦¨à¦‡à¦¨à¦¸à§à¦Ÿà¦² à¦²à¦œà¦¿à¦• à¦…à¦¬à¦¿à¦•à¦² à¦°à¦¾à¦–à¦¾ à¦¹à§Ÿà§‡à¦›à§‡
+                console_logs[log_key] += f'<span style="color: #ff4444;">[{time.strftime("%H:%M:%S")}] ðŸ§¹ Manually removing {pkg_name}...</span>\n'
                 deleted_items = []
                 if os.path.exists(target_lib_dir):
                     clean_name = pkg_name.replace('-', '_').lower()
@@ -655,18 +655,18 @@ def terminal():
                                 if os.path.isdir(item_path): shutil.rmtree(item_path)
                                 else: os.remove(item_path)
                                 deleted_items.append(item)
-                                console_logs[log_key] += f'<span style="color: #00d4ff;">🗑️ Removed: {item}</span>\n'
+                                console_logs[log_key] += f'<span style="color: #00d4ff;">ðŸ—‘ï¸ Removed: {item}</span>\n'
                             except Exception as e:
-                                console_logs[log_key] += f'<span style="color: #ffcc00;">⚠️ Error deleting {item}</span>\n'
+                                console_logs[log_key] += f'<span style="color: #ffcc00;">âš ï¸ Error deleting {item}</span>\n'
                 
                 if deleted_items:
-                    console_logs[log_key] += f'<span style="color: #50fa7b;">✅ Successfully uninstalled {pkg_name}.</span>\n'
+                    console_logs[log_key] += f'<span style="color: #50fa7b;">âœ… Successfully uninstalled {pkg_name}.</span>\n'
                 
-                console_logs[log_key] += f'\n<span style="color: #ff4444;">[{time.strftime("%H:%M:%S")}] » Pʀᴏᴄᴇꜱꜱ Exɪᴛᴇᴅ (Cᴏᴅᴇ: 0)</span>\n'
+                console_logs[log_key] += f'\n<span style="color: #ff4444;">[{time.strftime("%H:%M:%S")}] Â» PÊ€á´á´„á´‡êœ±êœ± ExÉªá´›á´‡á´… (Cá´á´…á´‡: 0)</span>\n'
                 return
 
             # [FIXED BACKGROUND LOGIC]
-            # preexec_fn=os.setsid রিমুভ করা হয়েছে কারণ এটি start_new_session এর সাথে ক্রাশ করে
+            # preexec_fn=os.setsid à¦°à¦¿à¦®à§à¦­ à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡ à¦•à¦¾à¦°à¦£ à¦à¦Ÿà¦¿ start_new_session à¦à¦° à¦¸à¦¾à¦¥à§‡ à¦•à§à¦°à¦¾à¦¶ à¦•à¦°à§‡
             proc = subprocess.Popen(
                 full_cmd,
                 stdout=subprocess.PIPE,
@@ -676,7 +676,7 @@ def terminal():
                 env=env,
                 bufsize=1,
                 universal_newlines=True,
-                start_new_session=True # এটিই যথেষ্ট ব্যাকগ্রাউন্ডে রাখার জন্য
+                start_new_session=True # à¦à¦Ÿà¦¿à¦‡ à¦¯à¦¥à§‡à¦·à§à¦Ÿ à¦¬à§à¦¯à¦¾à¦•à¦—à§à¦°à¦¾à¦‰à¦¨à§à¦¡à§‡ à¦°à¦¾à¦–à¦¾à¦° à¦œà¦¨à§à¦¯
             )
             
             for line in proc.stdout:
@@ -685,12 +685,12 @@ def terminal():
             proc.wait()
 
             if is_install and proc.returncode == 0:
-                console_logs[log_key] += f'</span>\n<span style="color: #00ff88; font-weight: bold; text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);">✅ Successfully installed {pkg_name}.</span>'
+                console_logs[log_key] += f'</span>\n<span style="color: #00ff88; font-weight: bold; text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);">âœ… Successfully installed {pkg_name}.</span>'
 
-            console_logs[log_key] += f'\n<span style="color: #ff4444;">[{time.strftime("%H:%M:%S")}] » Pʀᴏᴄᴇꜱꜱ Exɪᴛᴇᴅ (Cᴏᴅᴇ: {proc.returncode})</span>\n'
+            console_logs[log_key] += f'\n<span style="color: #ff4444;">[{time.strftime("%H:%M:%S")}] Â» PÊ€á´á´„á´‡êœ±êœ± ExÉªá´›á´‡á´… (Cá´á´…á´‡: {proc.returncode})</span>\n'
             
         except Exception as e:
-            # এরর মেসেজটি টার্মিনালে আরও পরিষ্কার দেখাবে
+            # à¦à¦°à¦° à¦®à§‡à¦¸à§‡à¦œà¦Ÿà¦¿ à¦Ÿà¦¾à¦°à§à¦®à¦¿à¦¨à¦¾à¦²à§‡ à¦†à¦°à¦“ à¦ªà¦°à¦¿à¦·à§à¦•à¦¾à¦° à¦¦à§‡à¦–à¦¾à¦¬à§‡
             console_logs[log_key] += f'\n<span style="color: #ff3333; font-family: monospace;">[SYSTEM ERROR]: {str(e)}</span>\n'
 
     # Logic Router
@@ -699,23 +699,23 @@ def terminal():
         if not os.path.exists(target_lib_dir): os.makedirs(target_lib_dir)
         target_cmd = ['pip', 'install', pkg, '--no-cache-dir', '--no-user', '--target', target_lib_dir]
         threading.Thread(target=run_process, args=(target_cmd, False, pkg, True), daemon=True).start()
-        return jsonify({"status":"success", "msg":f"Installing {pkg} 🚀"})
+        return jsonify({"status":"success", "msg":f"Installing {pkg} ðŸš€"})
 
     elif cmd.startswith('pip uninstall '):
         pkg = cmd.split('uninstall ')[1].strip()
         threading.Thread(target=run_process, args=(None, True, pkg), daemon=True).start()
-        return jsonify({"status":"success", "msg":f"Uninstalling {pkg}... 🧹"})
+        return jsonify({"status":"success", "msg":f"Uninstalling {pkg}... ðŸ§¹"})
 
     elif cmd.startswith(('python3 ', 'python ')):
         parts = cmd.split(' ')
         target_file = parts[1] if len(parts) > 1 else ""
         target_cmd = ['python3', '-u', target_file]
         threading.Thread(target=run_process, args=(target_cmd,), daemon=True).start()
-        return jsonify({"status":"success", "msg":f"Running {target_file} ⚡"})
+        return jsonify({"status":"success", "msg":f"Running {target_file} âš¡"})
 
     else:
         threading.Thread(target=run_process, args=(cmd.split(' '),), daemon=True).start()
-        return jsonify({"status":"success", "msg":"Executing Your File... 🛠️"})
+        return jsonify({"status":"success", "msg":"Executing Your File... ðŸ› ï¸"})
 
 
 
@@ -732,11 +732,11 @@ def create_file():
     users = load_users()
     u = users.get(user, {})
     
-    # --- [SMART FIX] স্টোরেজ লিমিট চেক লজিক ---
+    # --- [SMART FIX] à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ à¦²à¦¿à¦®à¦¿à¦Ÿ à¦šà§‡à¦• à¦²à¦œà¦¿à¦• ---
     user_dir = get_user_path()
-    current_usage_mb = get_dir_size(user_dir) # বর্তমান সাইজ (MB)
+    current_usage_mb = get_dir_size(user_dir) # à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦¸à¦¾à¦‡à¦œ (MB)
     
-    # মেমরি ইউনিট অনুযায়ী লিমিট বের করা
+    # à¦®à§‡à¦®à¦°à¦¿ à¦‡à¦‰à¦¨à¦¿à¦Ÿ à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦²à¦¿à¦®à¦¿à¦Ÿ à¦¬à§‡à¦° à¦•à¦°à¦¾
     mem_limit_str = str(u.get('memory', '512MB')).upper()
     limit_in_mb = 0
     match = re.match(r"(\d+)", mem_limit_str)
@@ -749,11 +749,11 @@ def create_file():
     else:
         limit_in_mb = u.get('disk', 1024)
 
-    # চেক করা হচ্ছে স্টোরেজ ফুল কি না
+    # à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ à¦«à§à¦² à¦•à¦¿ à¦¨à¦¾
     if current_usage_mb >= limit_in_mb:
         return jsonify({
             "status": "error", 
-            "msg": f"❌ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Delete some files! "
+            "msg": f"âŒ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Delete some files! "
         })
     # ------------------------------------------
 
@@ -771,13 +771,13 @@ def create_file():
         with open(path, 'w', encoding='utf-8') as f: 
             f.write("")
         
-        # --- [NEW] অটোমেটিক গিটহাব ব্যাকআপ অ্যাড করা হলো ---
+        # --- [NEW] à¦…à¦Ÿà§‹à¦®à§‡à¦Ÿà¦¿à¦• à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦…à§à¦¯à¦¾à¦¡ à¦•à¦°à¦¾ à¦¹à¦²à§‹ ---
         import threading
-        # যেহেতু নতুন ফাইল খালি (Empty), তাই গিটহাবেও একটি খালি ফাইল ব্যাকআপ হবে
+        # à¦¯à§‡à¦¹à§‡à¦¤à§ à¦¨à¦¤à§à¦¨ à¦«à¦¾à¦‡à¦² à¦–à¦¾à¦²à¦¿ (Empty), à¦¤à¦¾à¦‡ à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬à§‡à¦“ à¦à¦•à¦Ÿà¦¿ à¦–à¦¾à¦²à¦¿ à¦«à¦¾à¦‡à¦² à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦¹à¦¬à§‡
         threading.Thread(target=auto_github_backup, args=(user, filename, path)).start()
         # -----------------------------------------------
 
-        return jsonify({"status": "success", "msg": f"'{filename}' ᴄʀᴇᴀᴛᴇᴅ! 📄"})
+        return jsonify({"status": "success", "msg": f"'{filename}' á´„Ê€á´‡á´€á´›á´‡á´…! ðŸ“„"})
     except Exception as e:
         return jsonify({"status": "error", "msg": str(e)})
 
@@ -807,15 +807,15 @@ def web_edit_file(name):
             with open(path, 'w', encoding='utf-8') as f: 
                 f.write(content)
             
-            # --- [NEW] এডিট করার সাথে সাথে অটো ব্যাকআপ ---
+            # --- [NEW] à¦à¦¡à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦¸à¦¾à¦¥à§‡ à¦¸à¦¾à¦¥à§‡ à¦…à¦Ÿà§‹ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª ---
             import threading
             threading.Thread(target=auto_github_backup, args=(user, name, path)).start()
             
-            msg = f'<b style="color: #2ecc71; font-size: 25px;">✅ {name.upper()} ᴜᴘᴅᴀᴛᴇ ᴅᴏɴᴇ</b>'
+            msg = f'<b style="color: #2ecc71; font-size: 25px;">âœ… {name.upper()} á´œá´˜á´…á´€á´›á´‡ á´…á´É´á´‡</b>'
             return jsonify({"status": "success", "msg": msg})
             
         except Exception as e:
-            msg = f'<b style="color: #e74c3c; font-size: 25px;">❌ ᴇʀʀᴏʀ: {str(e).upper()}</b>'
+            msg = f'<b style="color: #e74c3c; font-size: 25px;">âŒ á´‡Ê€Ê€á´Ê€: {str(e).upper()}</b>'
             return jsonify({"status": "error", "msg": msg})
     
     with open(path, 'r', encoding='utf-8') as f: 
@@ -831,7 +831,7 @@ def delete_item(name):
     user = session['username']
     path = os.path.join(get_user_path(), name)
     
-    # --- [NEW] গিটহাব থেকে ডিলিট করার লজিক ---
+    # --- [NEW] à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¥à§‡à¦•à§‡ à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦²à¦œà¦¿à¦• ---
     def delete_from_github(username, filename):
         GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
         GITHUB_REPO = 'ronobiswas874-sketch/Hosting-files'
@@ -840,11 +840,11 @@ def delete_item(name):
         headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
 
         try:
-            # গিটহাব থেকে ফাইলের SHA সংগ্রহ করা
+            # à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¥à§‡à¦•à§‡ à¦«à¦¾à¦‡à¦²à§‡à¦° SHA à¦¸à¦‚à¦—à§à¦°à¦¹ à¦•à¦°à¦¾
             res = requests.get(url, headers=headers)
             if res.status_code == 200:
                 sha = res.json()['sha']
-                # ফাইল ডিলিট করার রিকোয়েস্ট
+                # à¦«à¦¾à¦‡à¦² à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦°à¦¿à¦•à§‹à§Ÿà§‡à¦¸à§à¦Ÿ
                 del_data = {
                     "message": f"Auto Delete: {filename} (User: {username})",
                     "sha": sha
@@ -853,15 +853,15 @@ def delete_item(name):
         except Exception as e:
             print(f"GitHub Delete Error: {e}")
 
-    # যদি এটি ফাইল হয় তবেই গিটহাব থেকে ডিলিট করার থ্রেড চলবে
+    # à¦¯à¦¦à¦¿ à¦à¦Ÿà¦¿ à¦«à¦¾à¦‡à¦² à¦¹à§Ÿ à¦¤à¦¬à§‡à¦‡ à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¥à§‡à¦•à§‡ à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦¥à§à¦°à§‡à¦¡ à¦šà¦²à¦¬à§‡
     if os.path.isfile(path):
         import threading
         threading.Thread(target=delete_from_github, args=(user, name)).start()
         os.remove(path)
     elif os.path.isdir(path):
         shutil.rmtree(path)
-        # ফোল্ডার ডিলিট করার ক্ষেত্রে গিটহাব এপিআই একটু জটিল, 
-        # তাই শুধু ফাইলের জন্য এই ব্যাকআপ ডিলিট সিস্টেমটি পারফেক্ট কাজ করবে।
+        # à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦•à§à¦·à§‡à¦¤à§à¦°à§‡ à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦à¦ªà¦¿à¦†à¦‡ à¦à¦•à¦Ÿà§ à¦œà¦Ÿà¦¿à¦², 
+        # à¦¤à¦¾à¦‡ à¦¶à§à¦§à§ à¦«à¦¾à¦‡à¦²à§‡à¦° à¦œà¦¨à§à¦¯ à¦à¦‡ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦¸à¦¿à¦¸à§à¦Ÿà§‡à¦®à¦Ÿà¦¿ à¦ªà¦¾à¦°à¦«à§‡à¦•à§à¦Ÿ à¦•à¦¾à¦œ à¦•à¦°à¦¬à§‡à¥¤
 
     return jsonify({"status":"success"})
 
@@ -879,7 +879,7 @@ def rename_item():
     new = os.path.join(get_user_path(), new_name)
     os.rename(old, new)
 
-    # --- [NEW] নতুন নামে গিটহাবে ব্যাকআপ পাঠানো ---
+    # --- [NEW] à¦¨à¦¤à§à¦¨ à¦¨à¦¾à¦®à§‡ à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬à§‡ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦ªà¦¾à¦ à¦¾à¦¨à§‹ ---
     if os.path.isfile(new):
         import threading
         threading.Thread(target=auto_github_backup, args=(user, new_name, new)).start()
@@ -890,12 +890,12 @@ def rename_item():
 import base64
 import requests
 
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '') # আপনার টোকেন
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '') # à¦†à¦ªà¦¨à¦¾à¦° à¦Ÿà§‹à¦•à§‡à¦¨
 GITHUB_REPO = 'ronobiswas874-sketch/Hosting-files'
 
 def sync_from_github():
-    """সার্ভার স্টার্ট হওয়ার সময় গিটহাব থেকে সব ফাইল রিকভার করবে"""
-    print("🔄 Syncing files from GitHub...")
+    """à¦¸à¦¾à¦°à§à¦­à¦¾à¦° à¦¸à§à¦Ÿà¦¾à¦°à§à¦Ÿ à¦¹à¦“à§Ÿà¦¾à¦° à¦¸à¦®à§Ÿ à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¥à§‡à¦•à§‡ à¦¸à¦¬ à¦«à¦¾à¦‡à¦² à¦°à¦¿à¦•à¦­à¦¾à¦° à¦•à¦°à¦¬à§‡"""
+    print("ðŸ”„ Syncing files from GitHub...")
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/users"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     
@@ -908,18 +908,18 @@ def sync_from_github():
                 u_path = os.path.join(USERS_ROOT, u_name)
                 if not os.path.exists(u_path): os.makedirs(u_path)
                 
-                # ওই ইউজারের সব ফাইল নামিয়ে আনা
+                # à¦“à¦‡ à¦‡à¦‰à¦œà¦¾à¦°à§‡à¦° à¦¸à¦¬ à¦«à¦¾à¦‡à¦² à¦¨à¦¾à¦®à¦¿à§Ÿà§‡ à¦†à¦¨à¦¾
                 files_url = folder['url']
                 f_res = requests.get(files_url, headers=headers)
                 if f_res.status_code == 200:
                     for f_data in f_res.json():
                         f_name = f_data['name']
                         f_download_url = f_data['download_url']
-                        # ফাইলটি লোকালি সেভ করা
+                        # à¦«à¦¾à¦‡à¦²à¦Ÿà¦¿ à¦²à§‹à¦•à¦¾à¦²à¦¿ à¦¸à§‡à¦­ à¦•à¦°à¦¾
                         content = requests.get(f_download_url).content
                         with open(os.path.join(u_path, f_name), 'wb') as f:
                             f.write(content)
-        print("✅ Sync Complete!")
+        print("âœ… Sync Complete!")
 
 @app.route('/logs/<path:filename>')
 def get_logs(filename):
@@ -928,24 +928,24 @@ def get_logs(filename):
     user = session.get('username')
     user_dir = os.path.join(USERS_ROOT, user)
     
-    # টার্মিনাল লগের জন্য
+    # à¦Ÿà¦¾à¦°à§à¦®à¦¿à¦¨à¦¾à¦² à¦²à¦—à§‡à¦° à¦œà¦¨à§à¦¯
     if filename == "terminal":
         log_key = f"{user}_terminal"
-        return jsonify({"logs": console_logs.get(log_key, "Sʏꜱᴛᴇᴍ Rᴇᴀᴅʏ...\n")})
+        return jsonify({"logs": console_logs.get(log_key, "SÊêœ±á´›á´‡á´ Rá´‡á´€á´…Ê...\n")})
     
-    # [FIX] সঠিক লগ ফাইল পাথ চেক
+    # [FIX] à¦¸à¦ à¦¿à¦• à¦²à¦— à¦«à¦¾à¦‡à¦² à¦ªà¦¾à¦¥ à¦šà§‡à¦•
     log_file_path = os.path.join(user_dir, f"{filename}.log")
     
     if os.path.exists(log_file_path):
         try:
             with open(log_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-                # শেষ ২০ হাজার ক্যারেক্টার দেখানো হচ্ছে যাতে ওয়েবসাইট ফাস্ট থাকে
+                # à¦¶à§‡à¦· à§¨à§¦ à¦¹à¦¾à¦œà¦¾à¦° à¦•à§à¦¯à¦¾à¦°à§‡à¦•à§à¦Ÿà¦¾à¦° à¦¦à§‡à¦–à¦¾à¦¨à§‹ à¦¹à¦šà§à¦›à§‡ à¦¯à¦¾à¦¤à§‡ à¦“à§Ÿà§‡à¦¬à¦¸à¦¾à¦‡à¦Ÿ à¦«à¦¾à¦¸à§à¦Ÿ à¦¥à¦¾à¦•à§‡
                 return jsonify({"logs": content[-20000:] if len(content) > 20000 else content})
         except:
-            return jsonify({"logs": "Eʀʀᴏʀ 404!"})
+            return jsonify({"logs": "EÊ€Ê€á´Ê€ 404!"})
     
-    return jsonify({"logs": "Yᴏᴜʀ Mᴀ𝙸ɴ.ᴩʏ 𝙸ꜱ Nᴏᴛ Rᴜɴɴ𝙸ɴɢ।"})
+    return jsonify({"logs": "Yá´á´œÊ€ Má´€ð™¸É´.á´©Ê ð™¸êœ± Ná´á´› Rá´œÉ´É´ð™¸É´É¢à¥¤"})
 
     
 @app.route('/')
@@ -964,61 +964,34 @@ def index():
         })
     files = sorted(files, key=lambda x: (not x['is_dir'], x['name']))
     
-    # total_users রিমুভ করা হয়েছে
+    # total_users à¦°à¦¿à¦®à§à¦­ à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡
     return render_template('index.html', files=files, user=session['username'], current_path=rel_path)
 
 
 from flask import jsonify, request, session, render_template, redirect, url_for
 
 
-# 🚀 সেশন কনফিগারেশন (১ ঘণ্টা)
+# ðŸš€ à¦¸à§‡à¦¶à¦¨ à¦•à¦¨à¦«à¦¿à¦—à¦¾à¦°à§‡à¦¶à¦¨ (à§§ à¦˜à¦£à§à¦Ÿà¦¾)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 
 
-# --- গ্লোবাল গিটহাব সেটিংস (Updated) ---
+# --- à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¸à§‡à¦Ÿà¦¿à¦‚à¦¸ (Updated) ---
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
 GITHUB_REPO = 'ronobiswas874-sketch/Hosting-files'
 GITHUB_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/users.json"
 
 def check_github_user(u_input, p_input):
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
     try:
-        # সরাসরি GitHub API থেকে users.json রিকোয়েস্ট করা হচ্ছে
-        res = requests.get(GITHUB_URL, headers=headers, timeout=10)
-        
-        if res.status_code == 200:
-            content = res.json()['content']
-            # বেস-৬৪ ডিকোড করে ডিকশনারিতে কনভার্ট করা
-            users = json.loads(base64.b64decode(content).decode('utf-8'))
-            
-            # Case insensitive username search (বড়-ছোট হাতের অক্ষর ম্যাটার করবে না)
-            for original_name, data in users.items():
-                if original_name.lower() == u_input.lower():
-                    # পাসওয়ার্ড চেক (স্ট্রিং হিসেবে তুলনা করা হচ্ছে)
-                    if str(data.get('p')) == str(p_input):
-                        return {"status": "success", "username": original_name, "data": data}
-                    else:
-                        return {"status": "wrong_password"}
-            
-            return {"status": "not_found"}
-            
-        elif res.status_code == 404:
-            print("❌ users.json file not found in the repo!")
-            return {"status": "error"}
-        elif res.status_code == 401:
-            print("❌ Invalid GitHub Token! 🤬")
-            return {"status": "error"}
-            
+        users = load_users()
+        for original_name, data in users.items():
+            if original_name.lower() == u_input.lower():
+                if str(data.get('p')) == str(p_input):
+                    return {'status': 'success', 'username': original_name, 'data': data}
+                else:
+                    return {'status': 'wrong_password'}
+        return {'status': 'not_found'}
     except Exception as e:
-        print(f"⚠️ GitHub Auth Connection Error: {e}")
-        return {"status": "error"}
-        
-    return {"status": "not_found"}
-
-
+        return {'status': 'error'}
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -1030,7 +1003,7 @@ def login():
             if not u_input or not p_input:
                 return jsonify({"status": "error", "msg": "Empty! Error"}), 400
 
-            # সরাসরি গিটহাব থেকে চেক করা হচ্ছে
+            # à¦¸à¦°à¦¾à¦¸à¦°à¦¿ à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¥à§‡à¦•à§‡ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡
             result = check_github_user(u_input, p_input)
 
             if result["status"] == "success":
@@ -1039,24 +1012,24 @@ def login():
                 if user_data.get('status') == 'suspended':
                     return jsonify({"status": "error", "msg": "Account Banned! "}), 403
 
-                # সেশন সেটআপ
+                # à¦¸à§‡à¦¶à¦¨ à¦¸à§‡à¦Ÿà¦†à¦ª
                 session.clear()
                 session.permanent = True
                 session['username'] = result["username"]
                 
-                # লোকাল ডাটাবেস আপডেট (ব্যাকআপ হিসেবে)
+                # à¦²à§‹à¦•à¦¾à¦² à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ à¦†à¦ªà¦¡à§‡à¦Ÿ (à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦¹à¦¿à¦¸à§‡à¦¬à§‡)
                 load_users() 
                 
-                return jsonify({"status": "success", "msg": "Login Successful! 🚀"})
+                return jsonify({"status": "success", "msg": "Login Successful! ðŸš€"})
             
             elif result["status"] == "wrong_password":
-                return jsonify({"status": "error", "msg": "Wrong Password! ❌"}), 401
+                return jsonify({"status": "error", "msg": "Wrong Password! âŒ"}), 401
             
             elif result["status"] == "not_found":
-                return jsonify({"status": "error", "msg": "Usar Not Found! 🔍"}), 404
+                return jsonify({"status": "error", "msg": "Usar Not Found! ðŸ”"}), 404
             
             else:
-                return jsonify({"status": "error", "msg": "Unknown ERROR! ⚠️"}), 500
+                return jsonify({"status": "error", "msg": "Unknown ERROR! âš ï¸"}), 500
                 
         except Exception as e:
             return jsonify({"status": "error", "msg": f"Server Crash: {str(e)}"}), 500
@@ -1114,17 +1087,17 @@ def logout():
     return redirect(url_for('login'))
 
 def sync_to_githubv2(users_dict, commit_message):
-    """GitHub এ সরাসরি ফাইল আপডেট করার উন্নত ফাংশন (v2)"""
+    """GitHub à¦ à¦¸à¦°à¦¾à¦¸à¦°à¦¿ à¦«à¦¾à¦‡à¦² à¦†à¦ªà¦¡à§‡à¦Ÿ à¦•à¦°à¦¾à¦° à¦‰à¦¨à§à¦¨à¦¤ à¦«à¦¾à¦‚à¦¶à¦¨ (v2)"""
     try:
         url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE_PATH}"
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
         
-        # ১. বর্তমান ফাইলের SHA সংগ্রহ করা
+        # à§§. à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦«à¦¾à¦‡à¦²à§‡à¦° SHA à¦¸à¦‚à¦—à§à¦°à¦¹ à¦•à¦°à¦¾
         r = requests.get(url, headers=headers)
         if r.status_code == 200:
             sha = r.json()['sha']
             
-            # ২. কন্টেন্ট আপডেট করা
+            # à§¨. à¦•à¦¨à§à¦Ÿà§‡à¦¨à§à¦Ÿ à¦†à¦ªà¦¡à§‡à¦Ÿ à¦•à¦°à¦¾
             import json
             updated_content = json.dumps(users_dict, indent=4)
             encoded_content = base64.b64encode(updated_content.encode()).decode()
@@ -1134,13 +1107,13 @@ def sync_to_githubv2(users_dict, commit_message):
                 "content": encoded_content,
                 "sha": sha
             }
-            # ৩. ফাইলটি GitHub-এ পুশ (Update) করা
+            # à§©. à¦«à¦¾à¦‡à¦²à¦Ÿà¦¿ GitHub-à¦ à¦ªà§à¦¶ (Update) à¦•à¦°à¦¾
             requests.put(url, headers=headers, json=data)
     except Exception as e:
         print(f"GitHub Sync Error: {e}")
 
-# --- পাসওয়ার্ড রিকভারি লজিক ---
-# --- পাসওয়ার্ড রিকভারি লজিক (Old Password System) ---
+# --- à¦ªà¦¾à¦¸à¦“à§Ÿà¦¾à¦°à§à¦¡ à¦°à¦¿à¦•à¦­à¦¾à¦°à¦¿ à¦²à¦œà¦¿à¦• ---
+# --- à¦ªà¦¾à¦¸à¦“à§Ÿà¦¾à¦°à§à¦¡ à¦°à¦¿à¦•à¦­à¦¾à¦°à¦¿ à¦²à¦œà¦¿à¦• (Old Password System) ---
 @app.route('/recover', methods=['GET', 'POST'])
 def recover_password():
     if request.method == 'POST':
@@ -1154,7 +1127,7 @@ def recover_password():
             users[u]['p'] = new_p
             save_users(users)
             
-            # নতুন ফাংশন কল
+            # à¦¨à¦¤à§à¦¨ à¦«à¦¾à¦‚à¦¶à¦¨ à¦•à¦²
             sync_to_githubv2(users, f"Password recovered for user: {u}")
             
             return jsonify({"status": "success", "msg": "Password changed & synced!"})
@@ -1173,14 +1146,14 @@ def upload_file():
     users = load_users()
     u = users.get(user, {})
     
-    # --- [SMART FIX] স্টোরেজ লিমিট চেক লজিক ---
+    # --- [SMART FIX] à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ à¦²à¦¿à¦®à¦¿à¦Ÿ à¦šà§‡à¦• à¦²à¦œà¦¿à¦• ---
     user_dir = get_user_path()
-    current_usage_mb = get_dir_size(user_dir) # বর্তমান ব্যবহারের পরিমাণ (MB তে)
+    current_usage_mb = get_dir_size(user_dir) # à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦°à§‡à¦° à¦ªà¦°à¦¿à¦®à¦¾à¦£ (MB à¦¤à§‡)
     
-    # ডাটাবেস থেকে মেমরি লিমিট নেওয়া (যেমন: '6KB', '512MB', '1GB')
+    # à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ à¦¥à§‡à¦•à§‡ à¦®à§‡à¦®à¦°à¦¿ à¦²à¦¿à¦®à¦¿à¦Ÿ à¦¨à§‡à¦“à§Ÿà¦¾ (à¦¯à§‡à¦®à¦¨: '6KB', '512MB', '1GB')
     mem_limit_str = str(u.get('memory', '512MB')).upper()
     
-    # ইউনিট কনভার্ট করে MB তে নিয়ে আসা (যাতে তুলনা করা সহজ হয়)
+    # à¦‡à¦‰à¦¨à¦¿à¦Ÿ à¦•à¦¨à¦­à¦¾à¦°à§à¦Ÿ à¦•à¦°à§‡ MB à¦¤à§‡ à¦¨à¦¿à§Ÿà§‡ à¦†à¦¸à¦¾ (à¦¯à¦¾à¦¤à§‡ à¦¤à§à¦²à¦¨à¦¾ à¦•à¦°à¦¾ à¦¸à¦¹à¦œ à¦¹à§Ÿ)
     limit_in_mb = 0
     match = re.match(r"(\d+)", mem_limit_str)
     if match:
@@ -1191,11 +1164,11 @@ def upload_file():
     else:
         limit_in_mb = u.get('disk', 1024) 
 
-    # ১. আপলোড করার আগেই চেক: বর্তমান স্টোরেজ কি ফুল?
+    # à§§. à¦†à¦ªà¦²à§‹à¦¡ à¦•à¦°à¦¾à¦° à¦†à¦—à§‡à¦‡ à¦šà§‡à¦•: à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ à¦•à¦¿ à¦«à§à¦²?
     if current_usage_mb >= limit_in_mb:
         return jsonify({
             "status": "error", 
-            "msg": f"❌ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Delete some files. "
+            "msg": f"âŒ Storage Full! ({current_usage_mb}MB / {mem_limit_str}). Delete some files. "
         }), 403
     # ------------------------------------------
 
@@ -1207,15 +1180,15 @@ def upload_file():
         return jsonify({"status": "error", "msg": "No selected file!"})
 
     if file:
-        # ২. নতুন ফাইলের সাইজ চেক (যাতে আপলোড হয়ে লিমিট ক্রস না করে)
+        # à§¨. à¦¨à¦¤à§à¦¨ à¦«à¦¾à¦‡à¦²à§‡à¦° à¦¸à¦¾à¦‡à¦œ à¦šà§‡à¦• (à¦¯à¦¾à¦¤à§‡ à¦†à¦ªà¦²à§‹à¦¡ à¦¹à§Ÿà§‡ à¦²à¦¿à¦®à¦¿à¦Ÿ à¦•à§à¦°à¦¸ à¦¨à¦¾ à¦•à¦°à§‡)
         file.seek(0, os.SEEK_END)
-        file_length = file.tell() / (1024 * 1024) # MB তে কনভার্ট
-        file.seek(0) # পয়েন্টার শুরুতে ফেরত আনা যাতে ফাইল সেভ করা যায়
+        file_length = file.tell() / (1024 * 1024) # MB à¦¤à§‡ à¦•à¦¨à¦­à¦¾à¦°à§à¦Ÿ
+        file.seek(0) # à¦ªà§Ÿà§‡à¦¨à§à¦Ÿà¦¾à¦° à¦¶à§à¦°à§à¦¤à§‡ à¦«à§‡à¦°à¦¤ à¦†à¦¨à¦¾ à¦¯à¦¾à¦¤à§‡ à¦«à¦¾à¦‡à¦² à¦¸à§‡à¦­ à¦•à¦°à¦¾ à¦¯à¦¾à§Ÿ
 
         if (current_usage_mb + file_length) > limit_in_mb:
             return jsonify({
                 "status": "error", 
-                "msg": f"❌ Upload Failed! This file ({round(file_length, 2)}MB) exceeds your limit. 🚨"
+                "msg": f"âŒ Upload Failed! This file ({round(file_length, 2)}MB) exceeds your limit. ðŸš¨"
             }), 403
 
         log_activity("file:upload", f"Uploaded: {file.filename}")
@@ -1228,11 +1201,11 @@ def upload_file():
             
         file_path = os.path.join(target_dir, file.filename)
         
-        # ফাইলটি লোকাল স্টোরেজে সেভ করা
+        # à¦«à¦¾à¦‡à¦²à¦Ÿà¦¿ à¦²à§‹à¦•à¦¾à¦² à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œà§‡ à¦¸à§‡à¦­ à¦•à¦°à¦¾
         file.save(file_path)
         
-        # --- [NEW] অটোমেটিক গিটহাব ব্যাকআপ অ্যাড করা হলো ---
-        # এটি ব্যাকগ্রাউন্ডে কাজ করবে, তাই আপলোড স্পিড স্লো হবে না
+        # --- [NEW] à¦…à¦Ÿà§‹à¦®à§‡à¦Ÿà¦¿à¦• à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦…à§à¦¯à¦¾à¦¡ à¦•à¦°à¦¾ à¦¹à¦²à§‹ ---
+        # à¦à¦Ÿà¦¿ à¦¬à§à¦¯à¦¾à¦•à¦—à§à¦°à¦¾à¦‰à¦¨à§à¦¡à§‡ à¦•à¦¾à¦œ à¦•à¦°à¦¬à§‡, à¦¤à¦¾à¦‡ à¦†à¦ªà¦²à§‹à¦¡ à¦¸à§à¦ªà¦¿à¦¡ à¦¸à§à¦²à§‹ à¦¹à¦¬à§‡ à¦¨à¦¾
         try:
             import threading
             threading.Thread(target=auto_github_backup, args=(user, file.filename, file_path)).start()
@@ -1240,57 +1213,57 @@ def upload_file():
             print(f"Threading Error: {e}")
         # -----------------------------------------------
 
-        return jsonify({"status": "success", "msg": f"'{file.filename}' !Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ 🚀"})
+        return jsonify({"status": "success", "msg": f"'{file.filename}' !Sá´œá´„á´„á´‡êœ±êœ±êœ°á´œÊŸÊŸÊ ðŸš€"})
 
 
 
 
-# --- সিকিউরিটি কি সেট করুন ---
-ADMIN_SECRET_KEY = "SHADOW-X-MODS" # আপনার পছন্দমতো কি পরিবর্তন করে নিন
+# --- à¦¸à¦¿à¦•à¦¿à¦‰à¦°à¦¿à¦Ÿà¦¿ à¦•à¦¿ à¦¸à§‡à¦Ÿ à¦•à¦°à§à¦¨ ---
+ADMIN_SECRET_KEY = "SHADOW-X-MODS" # à¦†à¦ªà¦¨à¦¾à¦° à¦ªà¦›à¦¨à§à¦¦à¦®à¦¤à§‹ à¦•à¦¿ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à§‡ à¦¨à¦¿à¦¨
 
-# --- নির্দিষ্ট ইউজার ডিলিট করার রুট ---
+# --- à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦Ÿ à¦‡à¦‰à¦œà¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦°à§à¦Ÿ ---
 @app.route('/remove_user/<username>')
 def remove_user(username):
-    # ইউআরএল থেকে কি চেক করা হচ্ছে (যেমন: /remove_user/shadow?key=SHADOW-X-MODS)
+    # à¦‡à¦‰à¦†à¦°à¦à¦² à¦¥à§‡à¦•à§‡ à¦•à¦¿ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ (à¦¯à§‡à¦®à¦¨: /remove_user/shadow?key=SHADOW-X-MODS)
     key = request.args.get('key')
     if key != ADMIN_SECRET_KEY:
-        return jsonify({"status": "error", "msg": "Unauthorized! Wrong Admin Key. 😡"}), 403
+        return jsonify({"status": "error", "msg": "Unauthorized! Wrong Admin Key. ðŸ˜¡"}), 403
 
     users = load_users()
     
     if username in users:
-        # ১. ডাটাবেস (json) থেকে রিমুভ
+        # à§§. à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ (json) à¦¥à§‡à¦•à§‡ à¦°à¦¿à¦®à§à¦­
         del users[username]
         save_users(users)
         
-        # ২. ইউজারের ফোল্ডার ডিলিট করা
+        # à§¨. à¦‡à¦‰à¦œà¦¾à¦°à§‡à¦° à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾
         user_path = os.path.join(USERS_ROOT, username)
         if os.path.exists(user_path):
             shutil.rmtree(user_path)
             
-        return jsonify({"status": "success", "msg": f"User '{username}' and their files removed! 🗑️"})
+        return jsonify({"status": "success", "msg": f"User '{username}' and their files removed! ðŸ—‘ï¸"})
     
     return jsonify({"status": "error", "msg": "User not found!"})
 
 
-# --- সব ইউজার ডিলিট করার রুট ---
+# --- à¦¸à¦¬ à¦‡à¦‰à¦œà¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦°à§à¦Ÿ ---
 @app.route('/remove_all')
 def remove_all_users():
-    # ইউআরএল থেকে কি চেক করা হচ্ছে (যেমন: /remove_all?key=SHADOW-X-MODS)
+    # à¦‡à¦‰à¦†à¦°à¦à¦² à¦¥à§‡à¦•à§‡ à¦•à¦¿ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ (à¦¯à§‡à¦®à¦¨: /remove_all?key=SHADOW-X-MODS)
     key = request.args.get('key')
     if key != ADMIN_SECRET_KEY:
-        return jsonify({"status": "error", "msg": "Unauthorized Access! 🚫"}), 403
+        return jsonify({"status": "error", "msg": "Unauthorized Access! ðŸš«"}), 403
 
     try:
-        # ১. ডাটাবেস রিসেট করা
+        # à§§. à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ à¦°à¦¿à¦¸à§‡à¦Ÿ à¦•à¦°à¦¾
         save_users({})
         
-        # ২. ইউজার্স রুট ফোল্ডার ডিলিট করে আবার নতুন করে তৈরি করা
+        # à§¨. à¦‡à¦‰à¦œà¦¾à¦°à§à¦¸ à¦°à§à¦Ÿ à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à§‡ à¦†à¦¬à¦¾à¦° à¦¨à¦¤à§à¦¨ à¦•à¦°à§‡ à¦¤à§ˆà¦°à¦¿ à¦•à¦°à¦¾
         if os.path.exists(USERS_ROOT):
             shutil.rmtree(USERS_ROOT)
         os.makedirs(USERS_ROOT)
         
-        return jsonify({"status": "success", "msg": "All users and data have been wiped! 🧹"})
+        return jsonify({"status": "success", "msg": "All users and data have been wiped! ðŸ§¹"})
     except Exception as e:
         return jsonify({"status": "error", "msg": str(e)})
 
@@ -1305,7 +1278,7 @@ from flask import Flask, render_template_string, request, jsonify, session, redi
 
 
 
-# 🚀 Security & Database
+# ðŸš€ Security & Database
 ADMIN_SECRET_KEY = "SHADOW-X-MODS"
 notifications_db = []
 
@@ -1331,7 +1304,7 @@ ADMIN_HTML = """
             margin: 0;
         }
 
-        /* 🌌 FAST MOVING STARFIELD 🚀 */
+        /* ðŸŒŒ FAST MOVING STARFIELD ðŸš€ */
         .stars-container {
             position: fixed;
             top: 0;
@@ -1433,7 +1406,7 @@ ADMIN_HTML = """
             letter-spacing: 2px;
         }
 
-        /* 🚨 Universal Pop-up Styling 🤬 */
+        /* ðŸš¨ Universal Pop-up Styling ðŸ¤¬ */
         .status-popup {
             display: none;
             position: fixed;
@@ -1659,16 +1632,16 @@ def get_latest_notif():
 def send_notification():
     msg = request.args.get('msg')
     
-    # যদি শুধু পেজ লোড হয় (msg না থাকে)
+    # à¦¯à¦¦à¦¿ à¦¶à§à¦§à§ à¦ªà§‡à¦œ à¦²à§‹à¦¡ à¦¹à§Ÿ (msg à¦¨à¦¾ à¦¥à¦¾à¦•à§‡)
     if not msg:
         return render_template_string(ADMIN_HTML, logged_in=session.get('admin_logged_in'), admin_key=ADMIN_SECRET_KEY)
     
-    # অথরাইজেশন চেক
+    # à¦…à¦¥à¦°à¦¾à¦‡à¦œà§‡à¦¶à¦¨ à¦šà§‡à¦•
     if not session.get('admin_logged_in'):
         return jsonify({"status": "error", "message": "Unauthorized!"}), 403
     
-    # নোটিফিকেশন সেভ করা
-    import datetime # এটি নিশ্চিত করুন ফাইলের শুরুতে আছে
+    # à¦¨à§‹à¦Ÿà¦¿à¦«à¦¿à¦•à§‡à¦¶à¦¨ à¦¸à§‡à¦­ à¦•à¦°à¦¾
+    import datetime # à¦à¦Ÿà¦¿ à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤ à¦•à¦°à§à¦¨ à¦«à¦¾à¦‡à¦²à§‡à¦° à¦¶à§à¦°à§à¦¤à§‡ à¦†à¦›à§‡
     notif_data = {"text": msg, "time": datetime.datetime.now().strftime("%I:%M %p")}
     notifications_db.append(notif_data)
     
@@ -1679,41 +1652,41 @@ def send_notification():
 def ban_user(username):
     key = request.args.get('key')
     if key != ADMIN_SECRET_KEY:
-        return jsonify({"status": "error", "msg": "Unauthorized! 😡"}), 403
+        return jsonify({"status": "error", "msg": "Unauthorized! ðŸ˜¡"}), 403
 
     users = load_users()
     if username in users:
-        # ১. ডাটাবেসে ইউজার স্ট্যাটাস পরিবর্তন
+        # à§§. à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸à§‡ à¦‡à¦‰à¦œà¦¾à¦° à¦¸à§à¦Ÿà§à¦¯à¦¾à¦Ÿà¦¾à¦¸ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨
         users[username]['status'] = 'suspended'
         save_users(users)
 
-        # ২. ইউজারের চলমান প্রসেসগুলো (Running Bots/Scripts) অটোমেটিক স্টপ করা
-        # running_processes ডিকশনারি থেকে ওই ইউজারের সব ফাইল খুঁজে বের করা হচ্ছে
+        # à§¨. à¦‡à¦‰à¦œà¦¾à¦°à§‡à¦° à¦šà¦²à¦®à¦¾à¦¨ à¦ªà§à¦°à¦¸à§‡à¦¸à¦—à§à¦²à§‹ (Running Bots/Scripts) à¦…à¦Ÿà§‹à¦®à§‡à¦Ÿà¦¿à¦• à¦¸à§à¦Ÿà¦ª à¦•à¦°à¦¾
+        # running_processes à¦¡à¦¿à¦•à¦¶à¦¨à¦¾à¦°à¦¿ à¦¥à§‡à¦•à§‡ à¦“à¦‡ à¦‡à¦‰à¦œà¦¾à¦°à§‡à¦° à¦¸à¦¬ à¦«à¦¾à¦‡à¦² à¦–à§à¦à¦œà§‡ à¦¬à§‡à¦° à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡
         keys_to_stop = [k for k in running_processes.keys() if k.startswith(f"{username}_")]
         
         for k in keys_to_stop:
             try:
                 pid = running_processes[k]
-                # প্রসেস গ্রুপ সহ কিল করা হচ্ছে যাতে চাইল্ড প্রসেসও বন্ধ হয়
+                # à¦ªà§à¦°à¦¸à§‡à¦¸ à¦—à§à¦°à§à¦ª à¦¸à¦¹ à¦•à¦¿à¦² à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ à¦¯à¦¾à¦¤à§‡ à¦šà¦¾à¦‡à¦²à§à¦¡ à¦ªà§à¦°à¦¸à§‡à¦¸à¦“ à¦¬à¦¨à§à¦§ à¦¹à§Ÿ
                 try:
                     os.killpg(os.getpgid(pid), signal.SIGKILL)
                 except:
                     os.kill(pid, signal.SIGKILL)
                 
-                # লিস্ট থেকে রিমুভ করা
+                # à¦²à¦¿à¦¸à§à¦Ÿ à¦¥à§‡à¦•à§‡ à¦°à¦¿à¦®à§à¦­ à¦•à¦°à¦¾
                 del running_processes[k]
                 if k in file_start_times:
                     del file_start_times[k]
             except Exception as e:
                 print(f"Error stopping process for banned user: {e}")
 
-        # ৩. যদি ব্যান করা ইউজার বর্তমানে ব্রাউজারে লগইন থাকে, সেশন ক্লিয়ার করে দাও
+        # à§©. à¦¯à¦¦à¦¿ à¦¬à§à¦¯à¦¾à¦¨ à¦•à¦°à¦¾ à¦‡à¦‰à¦œà¦¾à¦° à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨à§‡ à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦°à§‡ à¦²à¦—à¦‡à¦¨ à¦¥à¦¾à¦•à§‡, à¦¸à§‡à¦¶à¦¨ à¦•à§à¦²à¦¿à§Ÿà¦¾à¦° à¦•à¦°à§‡ à¦¦à¦¾à¦“
         if session.get('username') == username:
             session.clear()
 
         return jsonify({
             "status": "success", 
-            "msg": f"User '{username}' BANNED & all running processes STOPPED! 🚫"
+            "msg": f"User '{username}' BANNED & all running processes STOPPED! ðŸš«"
         })
     
     return jsonify({"status": "error", "msg": "User not found!"})
@@ -1727,10 +1700,10 @@ def activity_log():
         return '<p class="p-5 text-red-500">Session expired. Please login.</p>', 401
     
     user = session['username']
-    # activities ডাটা না থাকলে খালি লিস্ট পাঠানো হচ্ছে
+    # activities à¦¡à¦¾à¦Ÿà¦¾ à¦¨à¦¾ à¦¥à¦¾à¦•à¦²à§‡ à¦–à¦¾à¦²à¦¿ à¦²à¦¿à¦¸à§à¦Ÿ à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à¦šà§à¦›à§‡
     acts = user_activities.get(user, [])
     
-    # render_template এ ডাটা পাস করা হচ্ছে
+    # render_template à¦ à¦¡à¦¾à¦Ÿà¦¾ à¦ªà¦¾à¦¸ à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡
     return render_template('activity.html', activities=acts, user=user)
 
 @app.route('/requirements.html')
@@ -1745,7 +1718,7 @@ def logout_all_users():
     # URL check: /logout_all?key=OWNER_XEROX89
     key = request.args.get('key')
     if key != ADMIN_SECRET_KEY:
-        return jsonify({"status": "error", "msg": "Unauthorized! Access Denied. 😡"}), 403
+        return jsonify({"status": "error", "msg": "Unauthorized! Access Denied. ðŸ˜¡"}), 403
 
     try:
         # Changing the secret key instantly invalidates all existing browser sessions
@@ -1758,7 +1731,7 @@ def logout_all_users():
         
         return jsonify({
             "status": "success", 
-            "msg": "All active sessions have been terminated! 💥",
+            "msg": "All active sessions have been terminated! ðŸ’¥",
             "action": "Secret key rotated."
         })
     except Exception as e:
@@ -1843,7 +1816,7 @@ def github_deploy():
             
             # Temp folder clean up
             shutil.rmtree(temp_dir)
-            return jsonify({"status": "success", "msg": "GitHub files saved to your folder! ⚡"})
+            return jsonify({"status": "success", "msg": "GitHub files saved to your folder! âš¡"})
         else:
             return jsonify({"status": "error", "msg": f"Git Error: {process.stderr}"})
 
@@ -1857,26 +1830,26 @@ import requests
 import base64
 from flask import jsonify, session, request
 
-# আপনার GitHub কনফিগ (এগুলো আপনার কোডের উপরে ডিফাইন করা থাকতে হবে)
+# à¦†à¦ªà¦¨à¦¾à¦° GitHub à¦•à¦¨à¦«à¦¿à¦— (à¦à¦—à§à¦²à§‹ à¦†à¦ªà¦¨à¦¾à¦° à¦•à§‹à¦¡à§‡à¦° à¦‰à¦ªà¦°à§‡ à¦¡à¦¿à¦«à¦¾à¦‡à¦¨ à¦•à¦°à¦¾ à¦¥à¦¾à¦•à¦¤à§‡ à¦¹à¦¬à§‡)
 
-GITHUB_FILE_PATH = "users.json" # আপনার ফাইলের পাথ
+GITHUB_FILE_PATH = "users.json" # à¦†à¦ªà¦¨à¦¾à¦° à¦«à¦¾à¦‡à¦²à§‡à¦° à¦ªà¦¾à¦¥
 
 def update_github_file(content_dict, message):
-    """GitHub-এর ফাইলটি সরাসরি এডিট করার ফাংশন"""
+    """GitHub-à¦à¦° à¦«à¦¾à¦‡à¦²à¦Ÿà¦¿ à¦¸à¦°à¦¾à¦¸à¦°à¦¿ à¦à¦¡à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦«à¦¾à¦‚à¦¶à¦¨"""
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE_PATH}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     
-    # ১. ফাইলের বর্তমান SHA গেট করা (এডিট করার জন্য SHA লাগে)
+    # à§§. à¦«à¦¾à¦‡à¦²à§‡à¦° à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ SHA à¦—à§‡à¦Ÿ à¦•à¦°à¦¾ (à¦à¦¡à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦œà¦¨à§à¦¯ SHA à¦²à¦¾à¦—à§‡)
     r = requests.get(url, headers=headers)
     if r.status_code == 200:
         sha = r.json()['sha']
         
-        # ২. নতুন কন্টেন্ট এনকোড করা
+        # à§¨. à¦¨à¦¤à§à¦¨ à¦•à¦¨à§à¦Ÿà§‡à¦¨à§à¦Ÿ à¦à¦¨à¦•à§‹à¦¡ à¦•à¦°à¦¾
         import json
         updated_content = json.dumps(content_dict, indent=4)
         encoded_content = base64.b64encode(updated_content.encode()).decode()
         
-        # ৩. GitHub-এ পুশ (Update) করা
+        # à§©. GitHub-à¦ à¦ªà§à¦¶ (Update) à¦•à¦°à¦¾
         data = {
             "message": message,
             "content": encoded_content,
@@ -1907,7 +1880,7 @@ def update_profile():
                 return jsonify({"status": "error", "msg": "Username already exists!"})
             
             users[new_username] = users.pop(current_user)
-            # ফোল্ডার রিনেম লজিক...
+            # à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦°à¦¿à¦¨à§‡à¦® à¦²à¦œà¦¿à¦•...
             old_path = os.path.join(USERS_ROOT, current_user)
             new_path = os.path.join(USERS_ROOT, new_username)
             if os.path.exists(old_path):
@@ -1919,9 +1892,9 @@ def update_profile():
 
         if change_made:
             save_users(users)
-            # নতুন ফাংশন কল
+            # à¦¨à¦¤à§à¦¨ à¦«à¦¾à¦‚à¦¶à¦¨ à¦•à¦²
             sync_to_githubv2(users, f"Profile updated for {current_user}")
-            return jsonify({"status": "success", "msg": "Pʀᴏꜰɪʟᴇ Uᴩᴅᴀᴛᴇᴅ! ⚡"})
+            return jsonify({"status": "success", "msg": "PÊ€á´êœ°ÉªÊŸá´‡ Uá´©á´…á´€á´›á´‡á´…! âš¡"})
             
     except Exception as e:
         return jsonify({"status": "error", "msg": str(e)})
@@ -1950,7 +1923,7 @@ import os
 import re
 import time
 
-# 🤬 Your API credentials
+# ðŸ¤¬ Your API credentials
 
 
 def ai_fix_code(code: str, error_msg: str) -> str:
@@ -2043,7 +2016,7 @@ def run_python_file_stream(file_path, username=None, auto_fix=True, background=F
             for line in process.stdout:    
                 yield line.rstrip()    
             process.wait()    
-            yield f"\n✔️ Script finished with exit code {process.returncode}"    
+            yield f"\nâœ”ï¸ Script finished with exit code {process.returncode}"    
             return process.returncode
         finally:  
             if file_key in file_start_times:  
@@ -2056,24 +2029,24 @@ def run_python_file_stream(file_path, username=None, auto_fix=True, background=F
         cmd = ["pip", "install", module_name, "--no-cache-dir"]    
         if target_lib_dir:    
             cmd += ["--target", target_lib_dir]    
-        yield f"\n📦 Installing missing module `{module_name}`..."    
+        yield f"\nðŸ“¦ Installing missing module `{module_name}`..."    
         try:    
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)    
             for line in proc.stdout:    
                 yield line.rstrip()    
             proc.wait()    
             if proc.returncode == 0:    
-                yield f"✔️ Module `{module_name}` installed successfully!"    
+                yield f"âœ”ï¸ Module `{module_name}` installed successfully!"    
             else:    
-                yield f"❌ Failed to install module `{module_name}`"    
+                yield f"âŒ Failed to install module `{module_name}`"    
         except Exception as e:    
-            yield f"❌ Pip install error: {str(e)}"    
+            yield f"âŒ Pip install error: {str(e)}"    
 
     def _main_loop():    
         run_attempt = 0    
         while True:    
             run_attempt += 1    
-            yield f"\n🎉 Running `{os.path.basename(file_path)}` (Attempt {run_attempt})...\n"    
+            yield f"\nðŸŽ‰ Running `{os.path.basename(file_path)}` (Attempt {run_attempt})...\n"    
             output = ""
             for line in _run():    
                 yield line    
@@ -2095,7 +2068,7 @@ def run_python_file_stream(file_path, username=None, auto_fix=True, background=F
             if auto_fix and exit_code != 0:    
                 traceback_lines = [l for l in output.splitlines() if "Traceback" in l or "Error" in l]    
                 error_msg = "\n".join(traceback_lines)    
-                yield f"\n⚠️ Detected error:{error_msg}"    
+                yield f"\nâš ï¸ Detected error:{error_msg}"    
 
                 with open(file_path, 'r', encoding='utf-8') as f:    
                     code = f.read()    
@@ -2104,11 +2077,11 @@ def run_python_file_stream(file_path, username=None, auto_fix=True, background=F
                 if fixed_code:    
                     with open(file_path, 'w', encoding='utf-8') as f:    
                         f.write(fixed_code)    
-                    yield f"\n💾 Fixed code saved. Restarting `{os.path.basename(file_path)}`..."    
+                    yield f"\nðŸ’¾ Fixed code saved. Restarting `{os.path.basename(file_path)}`..."    
                     time.sleep(1)    
                     continue    
                 else:    
-                    yield "\n\n❌ AI could not fix the script automatically."    
+                    yield "\n\nâŒ AI could not fix the script automatically."    
                     break    
 
             break  # finished successfully or cannot fix
@@ -2119,7 +2092,7 @@ def run_python_file_stream(file_path, username=None, auto_fix=True, background=F
                 pass  # discard output in background
         thread = threading.Thread(target=background_runner, daemon=True)
         thread.start()
-        yield f"\n🏃‍♂️ `{os.path.basename(file_path)}` is running in the background..."
+        yield f"\nðŸƒâ€â™‚ï¸ `{os.path.basename(file_path)}` is running in the background..."
     else:
         for line in _main_loop():
             yield line
@@ -2151,7 +2124,7 @@ def ai_assistant_live():
     if username and intent_mode != "run":
         # (Existing pip/module detection code here)
         if "no module named" in prompt.lower() or "modulenotfounderror" in prompt.lower():
-            match_err = re.search(r"no module named ['\"`‘“]?([a-zA-Z0-9\-_]+)['\"`’”]?", prompt, re.IGNORECASE)
+            match_err = re.search(r"no module named ['\"`â€˜â€œ]?([a-zA-Z0-9\-_]+)['\"`â€™â€]?", prompt, re.IGNORECASE)
             if match_err:
                 missing_module = match_err.group(1).strip()
             else:
@@ -2196,7 +2169,7 @@ def ai_assistant_live():
         if missing_module:
             target_lib_dir = os.path.join(USERS_ROOT, username, 'lib_env')
             os.makedirs(target_lib_dir, exist_ok=True)
-            yield f"data: {json.dumps({'token': f'📦 [System] `{missing_module}` detected. Installing...\n'})}\n\n"
+            yield f"data: {json.dumps({'token': f'ðŸ“¦ [System] `{missing_module}` detected. Installing...\n'})}\n\n"
             try:
                 process = subprocess.Popen(
                     ["pip", "install", missing_module, "--no-cache-dir", "--target", target_lib_dir],
@@ -2209,33 +2182,33 @@ def ai_assistant_live():
                 for line in process.stdout:
                     line_clean = line.rstrip()
                     if "WARNING" in line_clean:
-                        prefix = "⚠️ "
+                        prefix = "âš ï¸ "
                         warning_count += 1
                     elif "Downloading" in line_clean:
-                        prefix = "📥 "
+                        prefix = "ðŸ“¥ "
                     elif "Collecting" in line_clean:
-                        prefix = "🌟"
+                        prefix = "ðŸŒŸ"
                     elif "Successfully installed" in line_clean:
-                        prefix = "♻️ "
+                        prefix = "â™»ï¸ "
                     else:
-                        prefix = "⚙️ "
+                        prefix = "âš™ï¸ "
                     yield f"data: {json.dumps({'token': f'{prefix}{line_clean}\n'})}\n\n"
                 process.wait()
                 if warning_count:
-                    yield f"data: {json.dumps({'token': f'⚠️ {warning_count} warnings encountered\n'})}\n\n"
+                    yield f"data: {json.dumps({'token': f'âš ï¸ {warning_count} warnings encountered\n'})}\n\n"
                 if process.returncode == 0:
-                    yield f"data: {json.dumps({'token': f'✔️ `{missing_module}` installed successfully!\n'})}\n\n"
+                    yield f"data: {json.dumps({'token': f'âœ”ï¸ `{missing_module}` installed successfully!\n'})}\n\n"
                     return
                 else:
-                    yield f"data: {json.dumps({'token': f'❌ `{missing_module}` installation failed\n'})}\n\n"
+                    yield f"data: {json.dumps({'token': f'âŒ `{missing_module}` installation failed\n'})}\n\n"
                     return
             except Exception as pip_err:
-                yield f"data: {json.dumps({'token': f'❌ Pip error: {str(pip_err)}\n'})}\n\n"
+                yield f"data: {json.dumps({'token': f'âŒ Pip error: {str(pip_err)}\n'})}\n\n"
                 return
 
         # Run code directly if run mode
         if intent_mode == "run":
-            yield f"data: {json.dumps({'token': f'🚀 Running `{filename}`...\n'})}\n\n"
+            yield f"data: {json.dumps({'token': f'ðŸš€ Running `{filename}`...\n'})}\n\n"
             for line in run_python_file_stream(file_path, username=username):
                 yield f"data: {json.dumps({'token': line})}\n\n"
             return
@@ -2274,12 +2247,12 @@ def ai_assistant_live():
                     os.makedirs(os.path.dirname(file_path), exist_ok=True)
                     with open(file_path, 'w', encoding='utf-8') as f:
                         f.write(cleaned_code)
-                    yield f"data: {json.dumps({'token': f'💾 File `{filename}` saved successfully.\n'})}\n\n"
+                    yield f"data: {json.dumps({'token': f'ðŸ’¾ File `{filename}` saved successfully.\n'})}\n\n"
                 except Exception as e:
                     yield f"data: {json.dumps({'error': f'File save failed: {str(e)}'})}\n\n"
 
             # Run the fixed file live
-            yield f"data: {json.dumps({'token': f'🚀 Running `{filename}`...\n'})}\n\n"
+            yield f"data: {json.dumps({'token': f'ðŸš€ Running `{filename}`...\n'})}\n\n"
             for line in run_python_file_stream(file_path, username=username):
                 yield f"data: {json.dumps({'token': line})}\n\n"
 
@@ -2312,7 +2285,7 @@ def ai_assistant_live():
 
 @app.route('/api/fix-error', methods=['POST'])
 def fix_error():
-    """🛠️ এডিটর মোডাল থেকে আসা কোড অটো-ফিক্স ইঞ্জিন - Live AI Refactoring & Auto Pip Installer"""
+    """ðŸ› ï¸ à¦à¦¡à¦¿à¦Ÿà¦° à¦®à§‹à¦¡à¦¾à¦² à¦¥à§‡à¦•à§‡ à¦†à¦¸à¦¾ à¦•à§‹à¦¡ à¦…à¦Ÿà§‹-à¦«à¦¿à¦•à§à¦¸ à¦‡à¦žà§à¦œà¦¿à¦¨ - Live AI Refactoring & Auto Pip Installer"""
     data = request.get_json() or {}
     file_path = data.get('file_path', '')  # Expecting something like 'username/main.py' or 'main.py'
     error_logs = data.get('error', '')
@@ -2408,12 +2381,12 @@ import time
 
 # --- [FIXED] RESTART ALL BOTS ---
 def restart_all_active_bots():
-    """সার্ভার স্টার্ট হওয়ার সময় সব ইউজারের main.py অটোমেটিক রান করবে"""
-    print("🔄 [SYSTEM] Scanning active users...")
+    """à¦¸à¦¾à¦°à§à¦­à¦¾à¦° à¦¸à§à¦Ÿà¦¾à¦°à§à¦Ÿ à¦¹à¦“à§Ÿà¦¾à¦° à¦¸à¦®à§Ÿ à¦¸à¦¬ à¦‡à¦‰à¦œà¦¾à¦°à§‡à¦° main.py à¦…à¦Ÿà§‹à¦®à§‡à¦Ÿà¦¿à¦• à¦°à¦¾à¦¨ à¦•à¦°à¦¬à§‡"""
+    print("ðŸ”„ [SYSTEM] Scanning active users...")
     
     users = load_users()
     if not users:
-        print("⚠️ [SYSTEM] No users found in database.")
+        print("âš ï¸ [SYSTEM] No users found in database.")
         return
 
     for username, data in users.items():
@@ -2423,7 +2396,7 @@ def restart_all_active_bots():
             main_file = os.path.join(user_dir, 'main.py')
             
             if os.path.exists(main_file):
-                # স্টোরেজ চেক (Render-এ disk size calculation অনেক সময় slow হয়, তাই try-except)
+                # à¦¸à§à¦Ÿà§‹à¦°à§‡à¦œ à¦šà§‡à¦• (Render-à¦ disk size calculation à¦…à¦¨à§‡à¦• à¦¸à¦®à§Ÿ slow à¦¹à§Ÿ, à¦¤à¦¾à¦‡ try-except)
                 try:
                     current_usage_mb = get_dir_size(user_dir)
                     mem_limit_str = str(data.get('memory', '512MB')).upper()
@@ -2437,23 +2410,23 @@ def restart_all_active_bots():
                         else: limit_in_mb = val
 
                     if current_usage_mb >= limit_in_mb:
-                        print(f"⚠️ [SKIP] {username}: Storage Full ({current_usage_mb}MB)")
+                        print(f"âš ï¸ [SKIP] {username}: Storage Full ({current_usage_mb}MB)")
                         continue
                 except:
-                    print(f"⚠️ [WARN] Could not calculate storage for {username}, proceeding...")
+                    print(f"âš ï¸ [WARN] Could not calculate storage for {username}, proceeding...")
 
                 file_key = f"{username}_main.py"
                 log_file_path = os.path.join(user_dir, "main.py.log")
                 
-                # ইনভায়রনমেন্ট সেটআপ
+                # à¦‡à¦¨à¦­à¦¾à¦¯à¦¼à¦°à¦¨à¦®à§‡à¦¨à§à¦Ÿ à¦¸à§‡à¦Ÿà¦†à¦ª
                 env = os.environ.copy()
                 venv_path = os.path.join(user_dir, 'lib_env')
-                # PYTHONPATH ফিক্স করা হয়েছে যাতে মডিউল ঠিকঠাক পায়
+                # PYTHONPATH à¦«à¦¿à¦•à§à¦¸ à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡ à¦¯à¦¾à¦¤à§‡ à¦®à¦¡à¦¿à¦‰à¦² à¦ à¦¿à¦•à¦ à¦¾à¦• à¦ªà¦¾à§Ÿ
                 env['PYTHONPATH'] = venv_path + os.pathsep + env.get('PYTHONPATH', '')
                 env['PYTHONUNBUFFERED'] = '1'
 
                 try:
-                    # কিল যদি আগে থেকে কিছু থাকে (Render রিস্টার্টের সময় এটি জরুরি)
+                    # à¦•à¦¿à¦² à¦¯à¦¦à¦¿ à¦†à¦—à§‡ à¦¥à§‡à¦•à§‡ à¦•à¦¿à¦›à§ à¦¥à¦¾à¦•à§‡ (Render à¦°à¦¿à¦¸à§à¦Ÿà¦¾à¦°à§à¦Ÿà§‡à¦° à¦¸à¦®à§Ÿ à¦à¦Ÿà¦¿ à¦œà¦°à§à¦°à¦¿)
                     if file_key in running_processes:
                         try:
                             old_pid = running_processes[file_key]
@@ -2461,7 +2434,7 @@ def restart_all_active_bots():
                         except: pass
                         running_processes.pop(file_key, None)
 
-                    # বোট রান (start_new_session=True ব্যবহার করা হয়েছে যাতে মেইন প্রসেস মরলে এগুলো না মরে)
+                    # à¦¬à§‹à¦Ÿ à¦°à¦¾à¦¨ (start_new_session=True à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡ à¦¯à¦¾à¦¤à§‡ à¦®à§‡à¦‡à¦¨ à¦ªà§à¦°à¦¸à§‡à¦¸ à¦®à¦°à¦²à§‡ à¦à¦—à§à¦²à§‹ à¦¨à¦¾ à¦®à¦°à§‡)
                     proc = subprocess.Popen(
                         ['python3', '-u', main_file], 
                         stdout=subprocess.PIPE, 
@@ -2474,43 +2447,43 @@ def restart_all_active_bots():
                     running_processes[file_key] = proc.pid
                     file_start_times[file_key] = time.time()
                     
-                    # লগ ক্যাপচার থ্রেড
+                    # à¦²à¦— à¦•à§à¦¯à¦¾à¦ªà¦šà¦¾à¦° à¦¥à§à¦°à§‡à¦¡
                     threading.Thread(target=capture, args=(file_key, "main.py", proc, log_file_path), daemon=True).start()
                     
-                    print(f"✅ [RESTARTED] {username}/main.py (PID: {proc.pid})")
-                    time.sleep(0.3) # Render-এ দ্রুত রিস্টার্টের জন্য গ্যাপ কমানো হয়েছে
+                    print(f"âœ… [RESTARTED] {username}/main.py (PID: {proc.pid})")
+                    time.sleep(0.3) # Render-à¦ à¦¦à§à¦°à§à¦¤ à¦°à¦¿à¦¸à§à¦Ÿà¦¾à¦°à§à¦Ÿà§‡à¦° à¦œà¦¨à§à¦¯ à¦—à§à¦¯à¦¾à¦ª à¦•à¦®à¦¾à¦¨à§‹ à¦¹à§Ÿà§‡à¦›à§‡
                 except Exception as e:
-                    print(f"❌ [ERROR] {username}: {e}")
+                    print(f"âŒ [ERROR] {username}: {e}")
 
 # --- [FIXED] STARTUP ENGINE ---
 def run_everything():
-    """বুট হওয়ার সাথে সাথে রান হবে"""
-    # Render অনেক সময় ফাইল মাউন্ট করতে সময় নেয়, তাই ৫ সেকেন্ড ওয়েট করা সেফ
+    """à¦¬à§à¦Ÿ à¦¹à¦“à§Ÿà¦¾à¦° à¦¸à¦¾à¦¥à§‡ à¦¸à¦¾à¦¥à§‡ à¦°à¦¾à¦¨ à¦¹à¦¬à§‡"""
+    # Render à¦…à¦¨à§‡à¦• à¦¸à¦®à§Ÿ à¦«à¦¾à¦‡à¦² à¦®à¦¾à¦‰à¦¨à§à¦Ÿ à¦•à¦°à¦¤à§‡ à¦¸à¦®à§Ÿ à¦¨à§‡à§Ÿ, à¦¤à¦¾à¦‡ à§« à¦¸à§‡à¦•à§‡à¦¨à§à¦¡ à¦“à§Ÿà§‡à¦Ÿ à¦•à¦°à¦¾ à¦¸à§‡à¦«
     time.sleep(5) 
-    print("🔄 [STARTUP] Syncing with GitHub...")
+    print("ðŸ”„ [STARTUP] Syncing with GitHub...")
     try:
         sync_from_github()
     except Exception as e:
-        print(f"⚠️ [SYNC FAIL] {e}")
+        print(f"âš ï¸ [SYNC FAIL] {e}")
         
-    print("🚀 [STARTUP] Initializing Bots...")
+    print("ðŸš€ [STARTUP] Initializing Bots...")
     restart_all_active_bots()
 
 if __name__ == '__main__':
     if not os.path.exists(USERS_ROOT): os.makedirs(USERS_ROOT)
 
-    # ১. গিটহাব সিঙ্ক + বোট স্টার্ট — ব্যাকগ্রাউন্ড থ্রেডে রান করা হচ্ছে যাতে Flask দ্রুত পোর্ট খুলতে পারে
+    # à§§. à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¸à¦¿à¦™à§à¦• + à¦¬à§‹à¦Ÿ à¦¸à§à¦Ÿà¦¾à¦°à§à¦Ÿ â€” à¦¬à§à¦¯à¦¾à¦•à¦—à§à¦°à¦¾à¦‰à¦¨à§à¦¡ à¦¥à§à¦°à§‡à¦¡à§‡ à¦°à¦¾à¦¨ à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ à¦¯à¦¾à¦¤à§‡ Flask à¦¦à§à¦°à§à¦¤ à¦ªà§‹à¦°à§à¦Ÿ à¦–à§à¦²à¦¤à§‡ à¦ªà¦¾à¦°à§‡
     startup_thread = threading.Thread(target=run_everything, daemon=True)
     startup_thread.start()
     # --- [UPDATED: 80 SEC DELAY BACKUP] ---
     def backup_all_users_files():
         while True:
-            # ৫ মিনিট (৩০০ সেকেন্ড) পরপর লুপ চলবে
-            print("⏳ Waiting 300 seconds for next auto-backup cycle...")
+            # à§« à¦®à¦¿à¦¨à¦¿à¦Ÿ (à§©à§¦à§¦ à¦¸à§‡à¦•à§‡à¦¨à§à¦¡) à¦ªà¦°à¦ªà¦° à¦²à§à¦ª à¦šà¦²à¦¬à§‡
+            print("â³ Waiting 300 seconds for next auto-backup cycle...")
             time.sleep(300) 
             
             try:
-                print("🚀 [LOOP] Checking and backing up all user files...")
+                print("ðŸš€ [LOOP] Checking and backing up all user files...")
                 for user_folder in os.listdir(USERS_ROOT):
                     user_path = os.path.join(USERS_ROOT, user_folder)
                     
@@ -2519,22 +2492,23 @@ if __name__ == '__main__':
                             file_full_path = os.path.join(user_path, filename)
                             
                             if os.path.isfile(file_full_path):
-                                # ফাইল ব্যাকআপ থ্রেড স্টার্ট
+                                # à¦«à¦¾à¦‡à¦² à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦¥à§à¦°à§‡à¦¡ à¦¸à§à¦Ÿà¦¾à¦°à§à¦Ÿ
                                 threading.Thread(
                                     target=auto_github_backup, 
                                     args=(user_folder, filename, file_full_path), 
                                     daemon=True
                                 ).start()
-                                # ফাইলগুলোর মাঝে সামান্য গ্যাপ যাতে GitHub API ব্লক না করে
+                                # à¦«à¦¾à¦‡à¦²à¦—à§à¦²à§‹à¦° à¦®à¦¾à¦à§‡ à¦¸à¦¾à¦®à¦¾à¦¨à§à¦¯ à¦—à§à¦¯à¦¾à¦ª à¦¯à¦¾à¦¤à§‡ GitHub API à¦¬à§à¦²à¦• à¦¨à¦¾ à¦•à¦°à§‡
                                 time.sleep(1) 
-                print("✅ [LOOP] Auto-backup cycle finished.")
+                print("âœ… [LOOP] Auto-backup cycle finished.")
             except Exception as e:
-                print(f"⚠️ Global Backup Error: {e}")
+                print(f"âš ï¸ Global Backup Error: {e}")
 
-    # ব্যাকআপ লুপটি আলাদা থ্রেডে রান করা
+    # à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦²à§à¦ªà¦Ÿà¦¿ à¦†à¦²à¦¾à¦¦à¦¾ à¦¥à§à¦°à§‡à¦¡à§‡ à¦°à¦¾à¦¨ à¦•à¦°à¦¾
     all_backup_thread = threading.Thread(target=backup_all_users_files, daemon=True)
     all_backup_thread.start()
         
-    # ৪. ফ্ল্যাস্ক অ্যাপ রান
+    # à§ª. à¦«à§à¦²à§à¦¯à¦¾à¦¸à§à¦• à¦…à§à¦¯à¦¾à¦ª à¦°à¦¾à¦¨
     port = int(os.environ.get("PORT", 15029))
     app.run(host='0.0.0.0', port=port)
+
