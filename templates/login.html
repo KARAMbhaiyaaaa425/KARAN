@@ -268,26 +268,38 @@
                     </a>
                 </div>
             </form>
-<div id="registerSection" style="display: none;">
-    <form id="registerForm" class="space-y-4" onsubmit="event.preventDefault(); submitRegister();">
-        <div class="input-group">
-            <i class="fas fa-user"></i>
-            <input type="text" id="regUser" placeholder="New Username" required class="w-full">
+
         </div>
-        <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="regPass" placeholder="New Password" required class="w-full">
-        </div>
-        <button type="submit" class="btn-glow py-3.5 rounded-xl font-bold uppercase text-[11px] tracking-widest text-white shadow-lg" style="width:100%">
-            Register <i class="fas fa-user-plus ml-2"></i>
-        </button>
-    </form>
-    <div class="text-center mt-6">
-        <a href="#" onclick="document.getElementById('loginSection').style.display='block'; document.getElementById('registerSection').style.display='none'; return false;" class="text-[11px] text-gray-400 hover:text-white uppercase tracking-widest transition-colors">
-            Back to Login
-        </a>
-    </div>
-</div>
+
+        <div id="registerSection" style="display: none;">
+            <div class="text-center mb-8">
+                <div class="mt-2 mb-1">
+                    <i class="fas fa-user-plus text-xl text-glow-red"></i>
+                </div>
+                <h2 class="text-2xl font-bold logo-font text-glow-white uppercase">REG<span class="text-glow-red">ISTER</span></h2>
+                <div class="h-6 flex justify-center items-center">
+                    <p class="text-[11px] uppercase tracking-[0.15em] typing-text">Create Account</p>
+                </div>
+            </div>
+
+            <form id="registerForm" class="space-y-4" onsubmit="event.preventDefault(); submitRegister();">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regUser" placeholder="New Username" required class="w-full input-style p-3.5 outline-none rounded-xl">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPass" placeholder="New Password" required class="w-full input-style p-3.5 outline-none rounded-xl">
+                </div>
+                <button type="submit" class="btn-glow py-3.5 rounded-xl font-bold uppercase text-[11px] tracking-widest text-white shadow-lg" style="width:100%">
+                    Create Account <i class="fas fa-user-check ml-2"></i>
+                </button>
+            </form>
+            <div class="text-center mt-6">
+                <a href="#" onclick="document.getElementById('loginSection').style.display='block'; document.getElementById('registerSection').style.display='none'; return false;" class="text-[11px] text-gray-400 hover:text-white uppercase tracking-widest transition-colors">
+                    Back to Login
+                </a>
+            </div>
         </div>
 
         <div id="recoverSection" class="hidden-form">
