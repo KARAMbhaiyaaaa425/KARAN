@@ -19,16 +19,11 @@ import os
 from flask import jsonify, request, session, render_template, redirect, url_for
 
 # --- à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦—à¦¿à¦Ÿà¦¹à¦¾à¦¬ à¦¸à§‡à¦Ÿà¦¿à¦‚à¦¸ ---
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
+GITHUB_TOKEN = ''
 GITHUB_REPO = 'Manohar81020/-BOT-HOST-BOT'
 GITHUB_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/users.json"
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
+OPENROUTER_API_KEY = "sk-or-v1-REMOVED"
 AI_MODEL = "meta-llama/llama-3-8b-instruct"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 # --- à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦¸ à¦²à¦œà¦¿à¦• (Fixed) ---
@@ -116,7 +111,7 @@ console_logs = {"terminal": "à¦Ÿà¦¾à¦°à§à¦®à¦¿à¦¨à¦¾à�
 running_processes = {}
 file_start_times = {}
 
-# --- [KARAN BHAIYA ACTIVITY TRACKER] ---
+# --- [SHADOW ACTIVITY TRACKER] ---
 user_activities = {}
 
 def log_activity(action, details):
@@ -992,6 +987,7 @@ def check_github_user(u_input, p_input):
         return {'status': 'not_found'}
     except Exception as e:
         return {'status': 'error'}
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -1036,46 +1032,39 @@ def login():
         
     return render_template('login.html')
 
+
 @app.route('/register', methods=['POST'])
 def register():
     try:
         data = request.get_json()
         u_input = data.get('username', '').strip()
         p_input = data.get('password', '').strip()
-
         if not u_input or not p_input:
-            return jsonify({"status": "error", "msg": "Empty Username/Password!"}), 400
-
+            return jsonify({'status': 'error', 'msg': 'Empty! Error'}), 400
+        
         users = load_users()
-        # Case insensitive check optional, doing direct match for now
         if u_input in users:
-            return jsonify({"status": "error", "msg": "Username already taken!"}), 400
-
-        # Set default limits (30 days, 512MB RAM, 500MB Disk)
-        kolkata_tz = pytz.timezone('Asia/Kolkata')
-        now = datetime.now(kolkata_tz)
-        expiry_time = now + timedelta(days=30)
-        expiry_str = expiry_time.strftime('%d-%m-%Y %H:%M:%S')
+            return jsonify({'status': 'error', 'msg': 'Username already exists!'}), 400
+            
+        import time
+        from datetime import datetime
         
         users[u_input] = {
-            "p": p_input, 
-            "disk": 500, 
-            "memory": "512MB",
-            "status": "active",
-            "created_at": now.strftime('%d-%m-%Y %H:%M:%S'),
-            "expiry_date": expiry_str 
+            'p': p_input,
+            'role': 'user',
+            'expiry': int(time.time()) + (30 * 24 * 60 * 60),
+            'join_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'ram': 512,
+            'disk': 500,
+            'suspended': False
         }
         
-        save_users(users)
-        
-        user_path = os.path.join(USERS_ROOT, u_input)
-        if not os.path.exists(user_path):
-            os.makedirs(user_path)
+        with open(DB_FILE, 'w', encoding='utf-8') as f:
+            json.dump(users, f, indent=4)
             
-        return jsonify({"status": "success", "msg": "Registration Successful! You can login now."})
+        return jsonify({'status': 'success', 'msg': 'Account Created!'})
     except Exception as e:
-        return jsonify({"status": "error", "msg": f"Server Error: {str(e)}"}), 500
-
+        return jsonify({'status': 'error', 'msg': str(e)}), 500
 
 @app.route('/logout')
 def logout():
@@ -1219,12 +1208,12 @@ def upload_file():
 
 
 # --- à¦¸à¦¿à¦•à¦¿à¦‰à¦°à¦¿à¦Ÿà¦¿ à¦•à¦¿ à¦¸à§‡à¦Ÿ à¦•à¦°à§à¦¨ ---
-ADMIN_SECRET_KEY = "KARAN BHAIYA-X-MODS" # à¦†à¦ªà¦¨à¦¾à¦° à¦ªà¦›à¦¨à§à¦¦à¦®à¦¤à§‹ à¦•à¦¿ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à§‡ à¦¨à¦¿à¦¨
+ADMIN_SECRET_KEY = "SHADOW-X-MODS" # à¦†à¦ªà¦¨à¦¾à¦° à¦ªà¦›à¦¨à§à¦¦à¦®à¦¤à§‹ à¦•à¦¿ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à§‡ à¦¨à¦¿à¦¨
 
 # --- à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦Ÿ à¦‡à¦‰à¦œà¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦°à§à¦Ÿ ---
 @app.route('/remove_user/<username>')
 def remove_user(username):
-    # à¦‡à¦‰à¦†à¦°à¦à¦² à¦¥à§‡à¦•à§‡ à¦•à¦¿ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ (à¦¯à§‡à¦®à¦¨: /remove_user/KARAN BHAIYA?key=KARAN BHAIYA-X-MODS)
+    # à¦‡à¦‰à¦†à¦°à¦à¦² à¦¥à§‡à¦•à§‡ à¦•à¦¿ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ (à¦¯à§‡à¦®à¦¨: /remove_user/shadow?key=SHADOW-X-MODS)
     key = request.args.get('key')
     if key != ADMIN_SECRET_KEY:
         return jsonify({"status": "error", "msg": "Unauthorized! Wrong Admin Key. ðŸ˜¡"}), 403
@@ -1249,7 +1238,7 @@ def remove_user(username):
 # --- à¦¸à¦¬ à¦‡à¦‰à¦œà¦¾à¦° à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¾à¦° à¦°à§à¦Ÿ ---
 @app.route('/remove_all')
 def remove_all_users():
-    # à¦‡à¦‰à¦†à¦°à¦à¦² à¦¥à§‡à¦•à§‡ à¦•à¦¿ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ (à¦¯à§‡à¦®à¦¨: /remove_all?key=KARAN BHAIYA-X-MODS)
+    # à¦‡à¦‰à¦†à¦°à¦à¦² à¦¥à§‡à¦•à§‡ à¦•à¦¿ à¦šà§‡à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ (à¦¯à§‡à¦®à¦¨: /remove_all?key=SHADOW-X-MODS)
     key = request.args.get('key')
     if key != ADMIN_SECRET_KEY:
         return jsonify({"status": "error", "msg": "Unauthorized Access! ðŸš«"}), 403
@@ -1279,7 +1268,7 @@ from flask import Flask, render_template_string, request, jsonify, session, redi
 
 
 # ðŸš€ Security & Database
-ADMIN_SECRET_KEY = "KARAN BHAIYA-X-MODS"
+ADMIN_SECRET_KEY = "SHADOW-X-MODS"
 notifications_db = []
 
 ADMIN_HTML = """
@@ -1465,9 +1454,9 @@ ADMIN_HTML = """
     </div>
 
     {% if not logged_in %}
-    <div class="glass-panel w-full max-w-sm p-10 KARAN BHAIYA-2xl text-center border-t border-blue-400/20">
+    <div class="glass-panel w-full max-w-sm p-10 shadow-2xl text-center border-t border-blue-400/20">
         <div class="mb-8">
-            <div class="w-20 h-20 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/30 KARAN BHAIYA-[0_0_40px_rgba(26,79,204,0.4)] animate-pulse">
+            <div class="w-20 h-20 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/30 shadow-[0_0_40px_rgba(26,79,204,0.4)] animate-pulse">
                 <i class="fas fa-user-shield text-blue-400 text-3xl"></i>
             </div>
             <h2 class="text-2xl font-black mt-5 tracking-tight neon-text">VERIFY ACCOUNT</h2>
@@ -1476,7 +1465,7 @@ ADMIN_HTML = """
         
         <form id="loginForm" method="POST" action="/admin_login">
             <input type="password" id="adminKey" name="key" placeholder="SECURE KEY" required
-                class="w-full bg-[#080a0f] border border-gray-800 rounded-2xl p-4 text-center text-sm outline-none text-white focus:border-blue-500 transition-all mb-6 tracking-widest KARAN BHAIYA-inner">
+                class="w-full bg-[#080a0f] border border-gray-800 rounded-2xl p-4 text-center text-sm outline-none text-white focus:border-blue-500 transition-all mb-6 tracking-widest shadow-inner">
             <button type="submit" class="glow-btn w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[3px] text-white">Initialize Login</button>
         </form>
     </div>
@@ -1500,13 +1489,13 @@ ADMIN_HTML = """
     </script>
     
     {% else %}
-    <div class="glass-panel w-full max-w-md p-8 KARAN BHAIYA-2xl relative border-t border-blue-400/20">
+    <div class="glass-panel w-full max-w-md p-8 shadow-2xl relative border-t border-blue-400/20">
         <a href="/admin_logout" class="absolute top-6 right-6 text-gray-500 hover:text-red-500 transition-all hover:rotate-180">
             <i class="fas fa-power-off text-lg"></i>
         </a>
 
         <div class="flex flex-col items-center mb-6 pb-6 border-b border-white/5">
-            <div class="w-14 h-14 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full flex items-center justify-center KARAN BHAIYA-lg mb-3">
+            <div class="w-14 h-14 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full flex items-center justify-center shadow-lg mb-3">
                 <i class="fas fa-user-astronaut text-white text-xl"></i>
             </div>
             <div class="text-center">
@@ -1516,7 +1505,7 @@ ADMIN_HTML = """
         </div>
 
         <div class="flex items-center gap-5 mb-8">
-            <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center KARAN BHAIYA-[0_0_30px_rgba(26,79,204,0.3)] border border-blue-500/30">
+            <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(26,79,204,0.3)] border border-blue-500/30">
                 <i class="fas fa-signal text-blue-400 text-2xl animate-pulse"></i>
             </div>
             <div>
@@ -1533,7 +1522,7 @@ ADMIN_HTML = """
 
         <div class="space-y-6">
             <textarea id="notifMsg" placeholder="Enter encrypted transmission data..." 
-                class="w-full bg-[#080a0f] border border-gray-800 rounded-2xl p-6 text-sm outline-none h-44 resize-none text-white focus:border-blue-500 transition-all KARAN BHAIYA-inner"></textarea>
+                class="w-full bg-[#080a0f] border border-gray-800 rounded-2xl p-6 text-sm outline-none h-44 resize-none text-white focus:border-blue-500 transition-all shadow-inner"></textarea>
             
             <button onclick="send()" class="glow-btn w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[3px] flex items-center justify-center gap-3 text-white">
                 <i class="fas fa-paper-plane"></i> Send Broadcast
@@ -2511,6 +2500,3 @@ if __name__ == '__main__':
     # à§ª. à¦«à§à¦²à§à¦¯à¦¾à¦¸à§à¦• à¦…à§à¦¯à¦¾à¦ª à¦°à¦¾à¦¨
     port = int(os.environ.get("PORT", 15029))
     app.run(host='0.0.0.0', port=port)
-
-
-
