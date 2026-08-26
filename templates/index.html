@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KARAN BHAIYA Há´êœ±á´› v3.1 âš¡ Pá´á´¡á´‡Ê€á´‡ BY áŽ¬ÊŸð“²á´›ð’† ê«Ïð“² â¸™</title>
+    <title>KARAN BHAIYA Hᴏꜱᴛ v3.1 ⚡ Pᴏᴡᴇʀᴇ BY Ꭼʟ𝓲ᴛ𝒆 ꫝρ𝓲 ⸙</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -216,18 +216,18 @@
 
     <header class="h-16 pt-bg-panel border-b pt-border flex items-center px-6 justify-between">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-[#12141c] border border-[#1a4fcc]/40 KARAN BHAIYA-[0_0_15px_rgba(26,79,204,0.3)] relative overflow-hidden group">
+            <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-[#12141c] border border-[#1a4fcc]/40 shadow-[0_0_15px_rgba(26,79,204,0.3)] relative overflow-hidden group">
                 <div class="absolute inset-0 bg-gradient-to-br from-[#1a4fcc]/20 to-transparent opacity-50"></div>
                 <img src="https://cdn-icons-png.flaticon.com/512/8759/8759045.png" alt="Bot Logo" class="w-8 h-8 z-10 filter drop-shadow-[0_0_5px_#1a4fcc] group-hover:scale-110 transition-transform duration-300">
             </div>
 
             <div class="flex flex-col">
                 <h1 class="text-xl font-black tracking-tighter uppercase leading-none text-white">
-                    KARAN BHAIYA <span class="text-[#1a4fcc]">Há´êœ±á´›ð™¸É´É¢</span>
+                    Shadow <span class="text-[#1a4fcc]">Hᴏꜱᴛ𝙸ɴɢ</span>
                 </h1>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-[2px]">Uêœ±á´‡Ê€: {{ user }}</p>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[2px]">Uꜱᴇʀ: {{ user }}</p>
                 </div>
             </div>
         </div>
@@ -253,33 +253,33 @@
     </header>
 
     <nav class="h-14 pt-bg-panel border-b pt-border flex items-center px-6 space-x-8 overflow-x-auto no-scrollbar">
-        <button onclick="showTab('console')" id="t-console" class="pb-4 mt-4 text-sm tracking-wide tab-active uppercase">Cá´É´êœ±á´ÊŸá´‡</button>
-        <button onclick="showTab('files')" id="t-files" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Fð™¸ÊŸá´‡êœ±</button>
-        <button onclick="showTab('ai')" id="t-ai" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">AÉ¢á´‡É´á´›</button>
-        <button onclick="showTab('github')" id="t-github" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Gð™¸á´›Êœá´œÊ™</button>
-        <button onclick="showTab('activity')" id="t-activity" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Aá´„á´›ðš’á´ ðš’á´›Ê</button>
-        <button onclick="showTab('requirements')" id="t-requirements" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Rá´‡qá´œð™¸Ê€á´‡á´á´‡É´á´›êœ±</button>        
-        <button onclick="showTab('profile')" id="t-profile" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Sá´‡á´›á´›ðš’É´É¢êœ±</button>
+        <button onclick="showTab('console')" id="t-console" class="pb-4 mt-4 text-sm tracking-wide tab-active uppercase">Cᴏɴꜱᴏʟᴇ</button>
+        <button onclick="showTab('files')" id="t-files" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">F𝙸ʟᴇꜱ</button>
+        <button onclick="showTab('ai')" id="t-ai" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Aɢᴇɴᴛ</button>
+        <button onclick="showTab('github')" id="t-github" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">G𝙸ᴛʜᴜʙ</button>
+        <button onclick="showTab('activity')" id="t-activity" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Aᴄᴛ𝚒ᴠ𝚒ᴛʏ</button>
+        <button onclick="showTab('requirements')" id="t-requirements" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Rᴇqᴜ𝙸ʀᴇᴍᴇɴᴛꜱ</button>        
+        <button onclick="showTab('profile')" id="t-profile" class="text-gray-400 pb-4 mt-4 text-sm tracking-wide uppercase">Sᴇᴛᴛ𝚒ɴɢꜱ</button>
     </nav>
 
     <main class="container mx-auto p-4 mt-4">
         
         <div id="viewConsole">
             <div class="grid grid-cols-3 gap-3 mb-4">
-                <button onclick="control('run')" class="pt-btn-blue py-3 rounded font-bold uppercase text-sm">Sá´›á´€rá´›</button>
-                <button onclick="control('restart')" class="bg-gray-600 py-3 rounded font-bold uppercase text-sm">Rá´‡êœ±á´›á´€rá´›</button>
-                <button onclick="control('stop')" class="pt-btn-red py-3 rounded font-bold uppercase text-sm">Sá´›á´á´©</button>
+                <button onclick="control('run')" class="pt-btn-blue py-3 rounded font-bold uppercase text-sm">Sᴛᴀrᴛ</button>
+                <button onclick="control('restart')" class="bg-gray-600 py-3 rounded font-bold uppercase text-sm">Rᴇꜱᴛᴀrᴛ</button>
+                <button onclick="control('stop')" class="pt-btn-red py-3 rounded font-bold uppercase text-sm">Sᴛᴏᴩ</button>
             </div>
 
-            <div class="console-box rounded-t-lg" id="logs">[START] ÊŸá´É¢êœ± á´„ÊŸá´‡á´€Ê€á´‡á´… á´„ÊŸðš’á´„á´‹ á´›á´ êœ±á´›á´€Ê€á´›..</div>
+            <div class="console-box rounded-t-lg" id="logs">[START] ʟᴏɢꜱ ᴄʟᴇᴀʀᴇᴅ ᴄʟ𝚒ᴄᴋ ᴛᴏ ꜱᴛᴀʀᴛ..</div>
             <div class="relative mb-6">
-                <span class="absolute inset-y-0 left-3 flex items-center text-gray-500">Â»</span>
-                <input type="text" id="cmdInput" onkeydown="if(event.key==='Enter') sendCmd()" placeholder="root@KARAN BHAIYA_VIP_OWNER:~$ type your command here..." class="w-full bg-[#12141c] border-x border-b pt-border p-3 pl-8 text-sm outline-none">
+                <span class="absolute inset-y-0 left-3 flex items-center text-gray-500">»</span>
+                <input type="text" id="cmdInput" onkeydown="if(event.key==='Enter') sendCmd()" placeholder="root@SHADOW_VIP_OWNER:~$ type your command here..." class="w-full bg-[#12141c] border-x border-b pt-border p-3 pl-8 text-sm outline-none">
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                 <div class="status-card" style="border-left-color: #3b82f6;">
-                    <p class="text-[10px] uppercase text-gray-500 font-bold">Aá´…á´…Ê€á´‡êœ±êœ±</p>
+                    <p class="text-[10px] uppercase text-gray-500 font-bold">Aᴅᴅʀᴇꜱꜱ</p>
                     <p class="text-[12px] font-bold text-white" id="server-address">161.118.184.118:15030</p>
                 </div>
                 <div class="status-card" style="border-left-color: #ef4444;">
@@ -488,7 +488,7 @@
                     <div class="bg-[#161b22] px-4 py-3 border-b pt-border flex items-center justify-between shrink-0 h-[45px]">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 bg-purple-500 rounded-full animate-ping"></span>
-                            <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider">Há´êœ±á´›ðš’É´É¢ AÉ¢á´‡É´á´› á´ ðŸ¸.ðŸ¾</h3>
+                            <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider">Hᴏꜱᴛ𝚒ɴɢ Aɢᴇɴᴛ ᴠ𝟸.𝟾</h3>
                         </div>
                         <button onclick="clearAiChat()" class="text-gray-500 hover:text-red-400 text-xs uppercase font-bold"><i class="fas fa-eraser mr-1"></i> Clear</button>
                     </div>
@@ -497,7 +497,7 @@
                         <div class="flex gap-3 max-w-[85%] bg-purple-600/10 border border-purple-500/20 p-3 rounded-xl rounded-tl-none">
                             <i class="fas fa-robot text-purple-400 mt-0.5"></i>
                             <div>
-                                <p class="text-purple-300 font-bold mb-1">[ðŸ’ž AÉ¢á´‡É´á´›]</p>
+                                <p class="text-purple-300 font-bold mb-1">[💞 Aɢᴇɴᴛ]</p>
                                 <p class="text-green-400">Welcome Developer! I am your code generator & automated traceback engine. Drop your query or ask me to build automated solutions.</p>
                             </div>
                         </div>
@@ -512,7 +512,7 @@
                 </div>
                 
                 <div class="pt-bg-panel border pt-border rounded-xl p-4 space-y-4 h-fit shrink-0">
-                    <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest border-b pt-border pb-2">Qá´œðš’á´„á´‹ AÉ¢á´‡É´á´› Dðš’á´€É¢É´á´êœ±á´›ðš’á´„</h4>
+                    <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest border-b pt-border pb-2">Qᴜ𝚒ᴄᴋ Aɢᴇɴᴛ D𝚒ᴀɢɴᴏꜱᴛ𝚒ᴄ</h4>
                     <button onclick="triggerAiMacro('fix_all')" class="w-full bg-purple-600/10 hover:bg-purple-600/20 border border-purple-500/30 text-purple-400 text-left p-3 rounded-lg text-xs font-bold block"><i class="fas fa-magic mr-2"></i> Auto Scan Tracebacks</button>
                     <button onclick="triggerAiMacro('optimize')" class="w-full bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 text-blue-400 text-left p-3 rounded-lg text-xs font-bold block"><i class="fas fa-bolt mr-2"></i> Speed-Up Script Loops</button>
                 </div>
@@ -521,7 +521,7 @@
 
         <div id="viewProfile" class="hidden">
             <div class="max-w-2xl mx-auto space-y-4 pb-10">
-                <div class="pt-bg-panel border pt-border rounded-xl p-6 KARAN BHAIYA-2xl relative overflow-hidden">
+                <div class="pt-bg-panel border pt-border rounded-xl p-6 shadow-2xl relative overflow-hidden">
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-[#1a4fcc]/10 border border-[#1a4fcc]/40 rounded-full flex items-center justify-center mx-auto mb-2">
                             <i class="fas fa-user-shield text-[#1a4fcc] text-2xl"></i>
@@ -543,7 +543,7 @@
                             <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">New Password</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-600"><i class="fas fa-lock text-[10px]"></i></span>
-                                <input type="password" id="new_pass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full bg-[#0c0e14] border border-[#1c212a] p-3 pl-9 pr-10 rounded-lg text-xs outline-none focus:border-[#1a4fcc] text-gray-200">
+                                <input type="password" id="new_pass" placeholder="••••••••" class="w-full bg-[#0c0e14] border border-[#1c212a] p-3 pl-9 pr-10 rounded-lg text-xs outline-none focus:border-[#1a4fcc] text-gray-200">
                                 <button onclick="togglePass()" class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-[#1a4fcc]">
                                     <i id="eye-icon" class="fas fa-eye text-[12px]"></i>
                                 </button>
@@ -584,7 +584,7 @@
     </main>
 
     <div id="editModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50">
-        <div class="bg-[#12141c] w-full max-w-5xl rounded-xl border border-[#30363d] overflow-hidden KARAN BHAIYA-2xl">
+        <div class="bg-[#12141c] w-full max-w-5xl rounded-xl border border-[#30363d] overflow-hidden shadow-2xl">
             <div class="bg-[#21262d] px-4 py-3 border-b border-[#30363d] flex justify-between items-center">
                 <h3 id="editTitle" class="text-xs font-bold text-white uppercase tracking-widest">Editing</h3>
                 <div class="flex items-center gap-4 text-[10px] font-bold text-gray-400">
@@ -772,7 +772,7 @@
             }
         }
 
-        // ðŸ› ï¸ FIXED CORE STREAM ROUTER TUNNEL
+        // 🛠️ FIXED CORE STREAM ROUTER TUNNEL
         function sendAiQuery(event) {
             if (event) {
                 event.preventDefault();
@@ -797,7 +797,7 @@
             const userTemplate = `
                 <div class="flex gap-3 max-w-[85%] bg-blue-600/10 border border-blue-500/20 p-3 rounded-xl rounded-tr-none ml-auto mb-3 shrink-0">
                     <div class="text-right w-full">
-                        <p class="text-blue-300 font-bold mb-1 text-[11px]">[${document.body.innerHTML.match(/Uêœ±á´‡Ê€:\s*([^\n<]+)/)?.[1] || 'Developer'}]</p>
+                        <p class="text-blue-300 font-bold mb-1 text-[11px]">[${document.body.innerHTML.match(/Uꜱᴇʀ:\s*([^\n<]+)/)?.[1] || 'Developer'}]</p>
                          <p class="text-xs font-mono">${pythonColoredQuery}</p>
                     </div>
                 </div>`;
@@ -814,11 +814,11 @@
                     <div class="w-full">
                         <div class="flex justify-between items-start">
                             <div class="ai-status-log font-mono text-[10px] text-yellow-500 mb-1 animate-pulse">
-                                âš™ï¸ [SYSTEM LOG]: Analyzing query intent...
+                                ⚙️ [SYSTEM LOG]: Analyzing query intent...
                             </div>
                             <button onclick="copyChatText('${aiResponseId}')" class="copy-btn hidden group-hover:block absolute top-2 right-2"><i class="fas fa-copy"></i> Copy</button>
                         </div>
-                        <p class="text-purple-300 font-bold mb-1 text-[11px]">[ðŸ’ž AÉ¢á´‡É´á´› Rá´‡êœ±á´©á´É´êœ±á´‡]</p>
+                        <p class="text-purple-300 font-bold mb-1 text-[11px]">[💞 Aɢᴇɴᴛ Rᴇꜱᴩᴏɴꜱᴇ]</p>
                         <div class="ai-text-content text-green-400 text-xs font-mono whitespace-pre-wrap"><span class="inline-block w-2 h-3 bg-purple-500 animate-ping"></span> Syncing Response...</div>
                     </div>
                 </div>`;
@@ -849,9 +849,9 @@
                     return reader.read().then(({ done, value }) => {
                         if (done) {
                             if (currentMode === "code") {
-                                statusLog.innerHTML = "âœ”ï¸ [SYSTEM LOG]: Patched successfully.";
-                            } else if(fullResponseText.includes("ðŸ“¦") || fullResponseText.includes("âš™ï¸")) {
-                                statusLog.innerHTML = "ðŸ“¦ [SYSTEM LOG]: Pipeline installation finished.";
+                                statusLog.innerHTML = "✔️ [SYSTEM LOG]: Patched successfully.";
+                            } else if(fullResponseText.includes("📦") || fullResponseText.includes("⚙️")) {
+                                statusLog.innerHTML = "📦 [SYSTEM LOG]: Pipeline installation finished.";
                             } else {
                                 statusLog.style.display = "none"; 
                             }
@@ -875,10 +875,10 @@
                                     if (parsed.mode) {
                                         currentMode = parsed.mode;
                                         if (currentMode === "code") {
-                                            statusLog.innerHTML = "âš¡ [SYSTEM LOG]: Code loop compilation patch...";
+                                            statusLog.innerHTML = "⚡ [SYSTEM LOG]: Code loop compilation patch...";
                                             statusLog.style.color = "#a855f7";
                                         } else {
-                                            statusLog.innerHTML = "ðŸ’¬ [SYSTEM LOG]: Normal query sequence.";
+                                            statusLog.innerHTML = "💬 [SYSTEM LOG]: Normal query sequence.";
                                             statusLog.style.color = "#6b7280";
                                         }
                                         return;
@@ -892,30 +892,30 @@
                                         
                                         fullResponseText += parsed.token;
                                         
-                                        // à¦¯à¦¦à¦¿ à¦ªà¦¿à¦ª à¦²à¦¾à¦‡à¦­ à¦‡à¦¨à¦¸à§à¦Ÿà¦²à§‡à¦¶à¦¨ à¦²à¦— à¦¹à§Ÿ, à¦®à¦¾à¦°à§à¦•à¦¡à¦¾à¦‰à¦¨ à¦›à¦¾à§œà¦¾à¦‡ à¦°à§‡à¦¨à§à¦¡à¦¾à¦° à¦•à¦°à¦¾ à¦­à¦¾à¦²à§‹
+                                        // যদি পিপ লাইভ ইনস্টলেশন লগ হয়, মার্কডাউন ছাড়াই রেন্ডার করা ভালো
                                         if (fullResponseText) {
                                     const coloredLines = fullResponseText.split("\n").map(l => {
-                                        const lineTrimmed = l.trim();  // âœ… rename to avoid conflict
+                                        const lineTrimmed = l.trim();  // ✅ rename to avoid conflict
                                         const lineLower = l.toLowerCase();
                                         if (lineLower.includes("warning")) return `<span class="text-red-500 font-mono">${l}</span>`;
                                         if (lineLower.includes("name")) return `<span class="text-red-500 font-mono">${l}</span>`;
                                         if (lineLower.includes("error")) return `<span class="text-red-500 font-mono">${l}</span>`;
                                         if (lineLower.includes("info")) return `<span class="text-rose-800 font-mono">${l}</span>`; 
                                         if (lineLower.includes("collecting")) return `<span class="text-cyan-400 font-mono">${l}</span>`;
-                                        if (lineTrimmed.includes("âš ï¸")) return `<span class="text-red-500 font-mono">${lineTrimmed}</span>`;
-                                        if(l.includes("âš™ï¸")) return `<span class="text-yellow-200 font-mono">${l}</span>`;
-                                        if(l.includes("ðŸ“¥")) return `<span class="text-yellow-200 font-mono">${l}</span>`;   
-                                        if(l.includes("â™»ï¸")) return `<span class="text-green-400 font-mono">${l}</span>`;        
-                                        if(l.includes("ðŸŒ€")) return `<span class="text-green-400 font-mono">${l}</span>`;         
-                                        if(l.includes("ðŸŽ‰")) return `<span class="text-green-400 font-mono">${l}</span>`;                                
-                                        if(l.includes("ðŸ“¦")) return `<span class="text-green-400 font-mono">${l}</span>`;
-                                        if (lineTrimmed.includes("ðŸš€")) return `<span class="text-green-200 font-mono">${lineTrimmed}</span>`;
+                                        if (lineTrimmed.includes("⚠️")) return `<span class="text-red-500 font-mono">${lineTrimmed}</span>`;
+                                        if(l.includes("⚙️")) return `<span class="text-yellow-200 font-mono">${l}</span>`;
+                                        if(l.includes("📥")) return `<span class="text-yellow-200 font-mono">${l}</span>`;   
+                                        if(l.includes("♻️")) return `<span class="text-green-400 font-mono">${l}</span>`;        
+                                        if(l.includes("🌀")) return `<span class="text-green-400 font-mono">${l}</span>`;         
+                                        if(l.includes("🎉")) return `<span class="text-green-400 font-mono">${l}</span>`;                                
+                                        if(l.includes("📦")) return `<span class="text-green-400 font-mono">${l}</span>`;
+                                        if (lineTrimmed.includes("🚀")) return `<span class="text-green-200 font-mono">${lineTrimmed}</span>`;
                                         
-                                        if (lineTrimmed.includes("ðŸ’¾")) return `<span class="text-purple-400 font-mono">${lineTrimmed}</span>`;
-                                        if (lineTrimmed.includes("ðŸƒâ€â™‚ï¸")) return `<span class="text-amber-400 font-mono">${lineTrimmed}</span>`;    
-                                        if(l.includes("âŒ")) return `<span class="text-red-500 font-mono">${l}</span>`; // full dark red 
-                                        if(l.includes("ðŸ’¾")) return `<span class="text-purple-400 font-mono">${l}</span>`;   // fixed / saved code
-                                        if(l.includes("âœ”ï¸")) return `<span class="text-lime-400 font-mono">${l}</span>`;
+                                        if (lineTrimmed.includes("💾")) return `<span class="text-purple-400 font-mono">${lineTrimmed}</span>`;
+                                        if (lineTrimmed.includes("🏃‍♂️")) return `<span class="text-amber-400 font-mono">${lineTrimmed}</span>`;    
+                                        if(l.includes("❌")) return `<span class="text-red-500 font-mono">${l}</span>`; // full dark red 
+                                        if(l.includes("💾")) return `<span class="text-purple-400 font-mono">${l}</span>`;   // fixed / saved code
+                                        if(l.includes("✔️")) return `<span class="text-lime-400 font-mono">${l}</span>`;
                                         return `<span class="text-green-400 font-mono">${l}</span>`;
                                     }).join("<br>");
                                     textContent.innerHTML = coloredLines;
@@ -939,7 +939,7 @@
             })
             .catch(err => {
                 if(statusLog) {
-                    statusLog.innerHTML = "âŒ [SYSTEM LOG]: Tunnel failed.";
+                    statusLog.innerHTML = "❌ [SYSTEM LOG]: Tunnel failed.";
                     statusLog.classList.remove('animate-pulse');
                     statusLog.style.color = "#ef4444";
                 }
@@ -978,13 +978,13 @@
                 <div class="flex gap-3 max-w-[85%] bg-purple-600/10 border border-purple-500/20 p-3 rounded-xl rounded-tl-none mb-3 shrink-0">
                     <i class="fas fa-robot text-purple-400 mt-0.5 text-xs"></i>
                     <div>
-                        <p class="text-purple-300 font-bold mb-1 text-[11px]">[ðŸ’ž AÉ¢á´‡É´á´›]</p>
+                        <p class="text-purple-300 font-bold mb-1 text-[11px]">[💞 Aɢᴇɴᴛ]</p>
                         <p class="text-green-400 text-xs font-mono">Chat history cleared.</p>
                     </div>
                 </div>`;
         }
 
-        // ðŸš€ Admin Account Sync Profiler
+        // 🚀 Admin Account Sync Profiler
         function updateProfile() {
             const newUser = document.getElementById('new_user').value.trim();
             const newPass = document.getElementById('new_pass').value.trim();
@@ -1059,7 +1059,7 @@
             window.location.href = '/?path=' + parts.join('/');
         }
 
-        // ðŸš€ Process Automation Engine Configurations Controllers
+        // 🚀 Process Automation Engine Configurations Controllers
         function control(action) {
             fetch(`/${action}/${activeFile}`).then(r => r.json()).then(d => {
                 if(d.status === 'success') {
@@ -1075,7 +1075,7 @@
             });
         }
 
-        // ðŸš€ Notification System Functions Tracker
+        // 🚀 Notification System Functions Tracker
         function checkNotifications() {
             fetch('/get_latest_notif').then(res => res.json()).then(data => {
                 const countBadge = document.getElementById('notif-count');
@@ -1131,13 +1131,13 @@
 
         setInterval(checkNotifications, 10000);
 
-        // ðŸš€ Command Shell Pipeline Executions Manager
+        // 🚀 Command Shell Pipeline Executions Manager
         function sendCmd() {
             let inp = document.getElementById('cmdInput');
             let val = inp.value.trim();
             if(!val) return;
 
-            document.getElementById('logs').innerText += `\nÂ» ${val}`;
+            document.getElementById('logs').innerText += `\n» ${val}`;
 
             fetch('/command', {
                 method: 'POST',
@@ -1236,7 +1236,7 @@
             });
         }
 
-        // ðŸš€ Live Dynamic Logs Parsing Colorizer Filters
+        // 🚀 Live Dynamic Logs Parsing Colorizer Filters
         function startLogUpdate(file) {
             if (logInterval) clearInterval(logInterval);
             const logs = document.getElementById('logs');
@@ -1250,9 +1250,9 @@
                             let style = "font-family: 'Fira Code', monospace !important;";
                             
                             if (low.includes('error') || low.includes('fail')) {
-                                return `<div style="${style}" class="text-red-500">âŒ ${line}</div>`;
+                                return `<div style="${style}" class="text-red-500">❌ ${line}</div>`;
                             } else if (low.includes('warning') || low.includes('satisfied') || low.includes('already exists')) {
-                                return `<div style="${style} color: #f1e05a;">âš ï¸ ${line}</div>`;
+                                return `<div style="${style} color: #f1e05a;">⚠️ ${line}</div>`;
                             } else if (line.startsWith('[')) {
                                 return `<div style="${style} color: #9ece6a;">${line}</div>`;
                             }
@@ -1266,7 +1266,7 @@
             }, 1000);
         }
 
-        // ðŸš€ Server Telemetry Stat Loop Updates Engine
+        // 🚀 Server Telemetry Stat Loop Updates Engine
         setInterval(() => {
             fetch(`/stats?file=${activeFile}`).then(r => r.json()).then(d => {
                 document.getElementById('cpu').innerText = d.cpu || "0.00%";
@@ -1277,7 +1277,7 @@
             }).catch(() => {});
         }, 3000);
         
-        // ðŸš€ ChartJS Telemetry Graphs Initializer Script
+        // 🚀 ChartJS Telemetry Graphs Initializer Script
         const createChart = (canvasId, label, color) => {
             return new Chart(document.getElementById(canvasId), {
                 type: 'line',
@@ -1326,10 +1326,6 @@
     </script>
 </body>
 </html>
-
-
-
-
 
 
 
