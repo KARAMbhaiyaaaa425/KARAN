@@ -262,9 +262,11 @@
                 <button type="submit" class="btn-glow py-3.5 rounded-xl font-bold uppercase text-[11px] tracking-widest text-white">
                     Authenticate <i class="fas fa-arrow-right ml-2"></i>
                 </button>
-                <button type="button" onclick="document.getElementById('loginSection').style.display='none'; document.getElementById('registerSection').style.display='block';" class="btn-glow py-3.5 rounded-xl font-bold uppercase text-[11px] tracking-widest text-white shadow-lg mt-3" style="width:100%">
-                    Register Here <i class="fas fa-user-plus ml-2"></i>
-                </button>
+                <div class="text-center mt-4">
+                    <a href="javascript:void(0)" onclick="document.getElementById('loginSection').style.display='none'; document.getElementById('registerSection').style.display='block';" class="text-[11px] text-gray-500 hover:text-[#ff3b3b] transition uppercase tracking-widest">
+                        New User? Register Here
+                    </a>
+                </div>
             </form>
 <div id="registerSection" style="display: none;">
     <form id="registerForm" class="space-y-4" onsubmit="event.preventDefault(); submitRegister();">
