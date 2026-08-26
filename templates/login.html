@@ -262,6 +262,9 @@
                 <button type="submit" class="btn-glow py-3.5 rounded-xl font-bold uppercase text-[11px] tracking-widest text-white">
                     Authenticate <i class="fas fa-arrow-right ml-2"></i>
                 </button>
+                <button type="button" onclick="document.getElementById('loginSection').style.display='none'; document.getElementById('registerSection').style.display='block';" class="btn-glow py-3.5 rounded-xl font-bold uppercase text-[11px] tracking-widest text-white shadow-lg mt-3" style="width:100%">
+                    Register Here <i class="fas fa-user-plus ml-2"></i>
+                </button>
             </form>
 <div id="registerSection" style="display: none;">
     <form id="registerForm" class="space-y-4" onsubmit="event.preventDefault(); submitRegister();">
