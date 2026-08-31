@@ -3,3 +3,8 @@ pytz
 requests
 python-dotenv
 gunicorn
+python-telegram-bot
+pyTelegramBotAPI
+aiohttp
+qrcode
+pymongo

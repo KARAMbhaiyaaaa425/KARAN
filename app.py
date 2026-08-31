@@ -165,7 +165,9 @@ def start_file(filename):
             running_processes.pop(file_key, None)
 
     env = os.environ.copy()
-    env['PYTHONPATH'] = get_venv_path() + os.pathsep + env.get('PYTHONPATH', '')
+    lib_path = get_venv_path()
+    site_packages = os.path.join(lib_path, 'site-packages')
+    env['PYTHONPATH'] = f"{lib_path}:{site_packages}:{env.get('PYTHONPATH', '')}"
     env['PYTHONUNBUFFERED'] = '1'
     
     try:
