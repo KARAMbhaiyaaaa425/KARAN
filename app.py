@@ -14,7 +14,7 @@ DB_FILE = os.path.join(BASE_DIR, 'users.json')
 
 # --- OWNER CREDENTIALS (CHANGE YOUR PASSWORD HERE OR SET ENVIRONMENT VARIABLE) ---
 OWNER_USERNAME = os.getenv("OWNER_USERNAME", "owner")
-OWNER_PASSWORD = os.getenv("OWNER_PASSWORD", "admin12345") # <-- Aapka personal owner password
+OWNER_PASSWORD = os.getenv("OWNER_PASSWORD", "6owner pass") # <-- Aapka personal owner password
 
 OPENROUTER_API_KEY = "sk-or-v1-REMOVED"
 AI_MODEL = "meta-llama/llama-3-8b-instruct"
