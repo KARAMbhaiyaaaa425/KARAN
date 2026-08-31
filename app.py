@@ -719,6 +719,14 @@ def download_file(filename):
     else:
         return "File Not Found!", 404
 
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
 # --- 24/7 AUTO RESTART BOTS ON SERVER STARTUP (LOCAL ONLY, NO GITHUB SENDER) ---
 def restart_all_active_bots():
     print("[24/7 SYSTEM] Auto-restarting bots locally...")
