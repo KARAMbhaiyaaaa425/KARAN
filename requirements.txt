@@ -3,8 +3,10 @@ pytz
 requests
 python-dotenv
 gunicorn
-python-telegram-bot
+python-telegram-bot>=20.0
 pyTelegramBotAPI
 aiohttp
 qrcode
 pymongo
+cloudscraper
+tls_client
